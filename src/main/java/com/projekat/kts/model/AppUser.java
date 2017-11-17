@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -11,14 +12,15 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 public class AppUser implements UserDetails {
@@ -29,11 +31,18 @@ public class AppUser implements UserDetails {
 		
 		@Column(unique = true)
 		private String username;
-		@JsonProperty(access = Access.WRITE_ONLY)
+		
 		private String password;
 		@ElementCollection(fetch = FetchType.EAGER)
 		private List<String> roles = new ArrayList<>();
-
+				
+		@ManyToOne
+		@JoinColumn(name = "building_id")
+		@JsonIgnoreProperties(value = {"tenats"}, allowSetters=true)
+		private Building building; // Building in which he lives
+		
+		private boolean hasBuilding; // Indicates if the tenat has building or not
+		
 		public Long getId() {
 			return id;
 		}
@@ -64,6 +73,14 @@ public class AppUser implements UserDetails {
 
 		public void setPassword(String password) {
 			this.password = password;
+		}
+		
+		public Building getBuilding() {
+			return building;
+		}
+
+		public void setBuilding(Building building) {
+			this.building = building;
 		}
 
 		@JsonIgnore
@@ -109,4 +126,20 @@ public class AppUser implements UserDetails {
 		public String getUsername() {
 			return username;
 		}
+
+		public boolean isHasBuilding() {
+			return hasBuilding;
+		}
+
+		public void setHasBuilding(boolean hasBuilding) {
+			this.hasBuilding = hasBuilding;
+		}
+
+		@Override
+		public String toString() {
+			return "AppUser [id=" + id + ", name=" + name + ", hasBuilding=" + hasBuilding
+					+ "]";
+		}
+		
+		
 }

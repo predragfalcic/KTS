@@ -1,0 +1,91 @@
+<div class="row">
+	<div class="col-sm-6 ">
+		<div class="panel panel-default">
+			<div class="panel-heading">Building</div>
+			<div class="panel-body">
+				<div class="col-md-12">
+					<form ng-submit="submit()" name="buildingForm" novalidate>
+						<div class="form-group"
+							ng-class="{ 'has-error': buildingForm.name.$invalid && buildingForm.name.$dirty }">
+							<label for="name">Name:</label> <input type="text" required
+								class="form-control" ng-model="building.name" id="name"
+								name="name">
+						</div>
+						<div class="form-group"
+							ng-class="{ 'has-error': buildingForm.location.$invalid && buildingForm.location.$dirty }">
+							<label for="username">Location:</label> <input type="text"
+								required class="form-control" ng-model="building.location"
+								id="location" name="location">
+						</div>
+
+						<div class="form-group"
+							ng-class="{ 'has-error': building.numberOfApartments.$invalid && buildingForm.numberOfApartments.$dirty }">
+							<label for="pwd">Number of apartments:</label> <input type="number"
+								required class="form-control" id="numberOfApartments"
+								ng-model="building.numberOfApartments" name="numberOfApartments">
+						</div>
+						
+						<div class="form-group"
+							ng-class="{ 'has-error': buildingForm.tenats.$invalid && buildingForm.tenats.$dirty }">
+							<label for="role">Stanari:</label> 
+							<select ng-options="t.name for t in freeTenats"
+								multiple="multiple" class="form-control"
+								ng-model="building.tenats" id="tenat" name="tenat">
+							</select>
+						</div>
+						
+						<button type="submit" class="btn btn-default"
+							ng-disabled="buildingForm.$invalid">{{buttonText}}</button>
+							
+						<div class="alert alert-info margin-top-5" ng-show="message">{{message}}</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				Buildings
+				<button type="button" class="btn btn-default btn-sm"
+					ng-click="initAddBuilding()">
+					<span class="glyphicon glyphicon-plus"></span> New Building
+				</button>
+			</div>
+			<div class="panel-body">
+
+				<div class="alert alert-info margin-top-5" ng-show="deleteMessage">{{deleteMessage}}</div>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Name</th>
+							<th>Location</th>
+							<th>Number of apartments</th>
+							<th></th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="building in buildings">
+							<td>{{$index+1}}</td>
+							<td>{{building.name}}</td>
+							<td>{{building.location}}</td>
+							<td>{{building.numberOfApartments}}</td>
+							<td><button type="button" class="btn btn-default btn-sm"
+									ng-click="initEdit(building)">
+									<span class="glyphicon glyphicon-edit"></span>
+								</button></td>
+							<td>
+								<button type="button" class="btn btn-default btn-sm"
+									ng-click="deleteBuilding(building)">
+									<span class="glyphicon glyphicon-trash"></span>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

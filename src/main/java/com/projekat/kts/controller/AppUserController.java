@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.projekat.kts.model.AppUser;
+import com.projekat.kts.model.Building;
 import com.projekat.kts.repository.AppUserRepository;
 
 @RestController
@@ -72,6 +73,26 @@ public class AppUserController {
 		} else {
 			appUserRepository.delete(appUser);
 			return new ResponseEntity<AppUser>(appUser, HttpStatus.OK);
+		}
+	}
+	
+	/**
+	 * Method for deleting a user from building
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/users/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<AppUser> deleteUserFromBuilding(@PathVariable Long id) {
+		AppUser user = appUserRepository.findOne(id);
+		if (user == null) {
+			return new ResponseEntity<AppUser>(HttpStatus.NO_CONTENT);
+		} else {
+			user.setBuilding(null);
+			user.setHasBuilding(false);
+			appUserRepository.save(user);
+			return new ResponseEntity<AppUser>(user, HttpStatus.OK);
 		}
 	}
 

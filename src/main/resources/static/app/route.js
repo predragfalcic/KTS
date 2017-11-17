@@ -33,6 +33,18 @@ angular.module('app').config(function($stateProvider, $urlRouterProvider) {
 				controller : 'UsersController',
 			}
 		}
+	}).state('buildings', {
+		parent : 'nav',
+		url : '/buildings',
+		data : {
+			role : 'ADMIN'
+		},
+		views : {
+			'content@' : {
+				templateUrl : 'app/views/buildings.html',
+				controller : 'BuildingsController',
+			}
+		}
 	}).state('home', {
 		parent : 'nav',
 		url : '/',

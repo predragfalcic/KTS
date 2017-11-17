@@ -21,9 +21,15 @@
 			<a class="navbar-brand" ui-sref="home">Evidencija Stanara</a>
 		</div>
 		<div id="navbar" class="navbar-collapse collapse">
-			<ul class="nav navbar-nav">
+			<ul class="nav navbar-nav" ng-show="user.username">
 				<li ng-show="user.username">
-					<a ui-sref="users">Korisnici</a>
+					<a ui-sref="users" ng-show="userAdmin == true">Korisnici</a>
+				</li>
+				<li ng-show="user.username">
+					<a ui-sref="buildings" ng-show="userAdmin == true">Zgrade</a>					
+				</li>
+				<li>
+					<a ui-sref="buildings" ng-show="userAdmin == false">Zgrada</a>
 				</li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">

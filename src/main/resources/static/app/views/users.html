@@ -24,7 +24,7 @@
 								multiple="multiple" class="form-control"
 								ng-model="appUser.roles" id="role" name="role">
 								<option value="ADMIN">Administrator</option>
-								<option value="USER">User</option>
+								<option value="STANAR">Stanar</option>
 							</select>
 						</div>
 
@@ -55,13 +55,15 @@
 			<div class="panel-body">
 
 				<div class="alert alert-info margin-top-5" ng-show="deleteMessage">{{deleteMessage}}</div>
-				<table class="table table-bordered">
+				<table class="table table-bordered table-responsive">
 					<thead>
 						<tr>
 							<th>#</th>
 							<th>Name</th>
 							<th>Username</th>
 							<th>Role</th>
+							<th>Building</th>
+							<th>Remove from building</th>
 							<th></th>
 							<th></th>
 						</tr>
@@ -71,9 +73,20 @@
 							<td>{{$index+1}}</td>
 							<td>{{user.name}}</td>
 							<td>{{user.username}}</td>
-							<td><span ng-repeat="role in user.roles">{{role}}<span
-									ng-if="$index < (user.roles.length-1)">,</span>
-							</span></td>
+							<td>
+								<span ng-repeat="role in user.roles">{{role}}<span
+										ng-if="$index < (user.roles.length-1)">,</span>
+								</span>
+							</td>
+							<td>
+								{{user.building.name}}						
+							</td>
+							<td>
+								<button ng-show="user.building" type="button" class="btn btn-default btn-sm"
+									ng-click="deleteUserFromBuilding(user)">
+									<span class="glyphicon glyphicon-trash"></span>
+								</button>
+							</td>
 							<td><button type="button" class="btn btn-default btn-sm"
 									ng-click="initEdit(user)">
 									<span class="glyphicon glyphicon-edit"></span>

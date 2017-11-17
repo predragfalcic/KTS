@@ -11,7 +11,6 @@ angular.module('app')
 	var init = function() {
 		$http.get('api/users').success(function(res) {
 			$scope.users = res;
-
 			$scope.userForm.$setPristine();
 			$scope.message='';
 			$scope.appUser = null;
@@ -39,6 +38,15 @@ angular.module('app')
 
 	$scope.deleteUser = function(appUser) {
 		$http.delete('api/users/'+appUser.id).success(function(res) {
+			$scope.deleteMessage ="Success!";
+			init();
+		}).error(function(error) {
+			$scope.deleteMessage = error.message;
+		});
+	};
+	
+	$scope.deleteUserFromBuilding = function(appUser) {
+		$http.put('api/users/'+appUser.id).success(function(res) {
 			$scope.deleteMessage ="Success!";
 			init();
 		}).error(function(error) {
