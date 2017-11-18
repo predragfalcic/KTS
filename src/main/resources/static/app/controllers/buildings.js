@@ -6,17 +6,17 @@ angular.module('app')
 
 	var edit = false;
 	
-	$scope.buttonText = 'Create';
+	$scope.buttonText = 'Dodaj';
 	
 	var init = function() {
 		$http.get('api/buildings').success(function(res) {
 			$scope.buildings = res.buildings; // Buildings
 			$scope.freeTenats = res.tenats; // Tenats without building
-			$scope.buildingTenats = null; // Tenats in selected building
 			$scope.buildingForm.$setPristine();
 			$scope.message='';
 			$scope.building = null;
-			$scope.buttonText = 'Create';
+			$scope.institutions = null;
+			$scope.buttonText = 'Dodaj';
 		}).error(function(error) {
 			$scope.message = error.message;
 		});
@@ -25,9 +25,9 @@ angular.module('app')
 	$scope.initEdit = function(building) {
 		edit = true;
 		$scope.building = building;
-		$scope.buildingTenats = building.tenats;
+		$scope.institutions = building.institutions;
 		$scope.message='';
-		$scope.buttonText = 'Update';
+		$scope.buttonText = 'Azuriraj';
 	};
 
 	$scope.initAddBuilding = function() {
@@ -35,15 +35,33 @@ angular.module('app')
 		$scope.building = null;
 		$scope.buildingForm.$setPristine();
 		$scope.message='';
-		$scope.buttonText = 'Create';
+		$scope.institutions = null;
+		$scope.buttonText = 'Dodaj';
 	};
 
 	$scope.deleteBuilding = function(building) {
 		$http.delete('api/buildings/'+building.id).success(function(res) {
-			$scope.deleteMessage ="Success!";
+			$scope.deleteMessage ="Uspesno!";
 			init();
 		}).error(function(error) {
 			$scope.deleteMessage = error.message;
+		});
+	};
+	
+	// Brisemo instituciju iz zgrade
+	$scope.deleteInstitutionFromBuilding = function(institution) {
+		// vraca listu sa svim elementima osim onog koji brisemo
+		$scope.building.institutions = $scope.building.institutions.filter(function(el) {
+		    return el.id !== institution.id;
+		});
+		
+		$http.put('api/buildings/' + $scope.building.id + '/' + institution.id).success(function(res) {
+			$scope.building = null;
+			$scope.buildingForm.$setPristine();
+			$scope.deleteMessageInstitucija = "Institucija obrisana uspesno";
+			init();
+		}).error(function(error) {
+			$scope.message =error.message;
 		});
 	};
 
@@ -51,7 +69,7 @@ angular.module('app')
 		$http.put('api/buildings/', $scope.building).success(function(res) {
 			$scope.building = null;
 			$scope.buildingForm.$setPristine();
-			$scope.message = "Editting Success";
+			$scope.message = "Azuriranje uspesno";
 			init();
 		}).error(function(error) {
 			$scope.message =error.message;
@@ -59,11 +77,10 @@ angular.module('app')
 	};
 
 	var addBuilding = function(){
-		alert(JSON.stringify($scope.building));
 		$http.post('api/buildings/', $scope.building).success(function(res) {
 			$scope.building = null;
 			$scope.buildingForm.$setPristine();
-			$scope.message = "User Created";
+			$scope.message = "Zgrada kreirana";
 			init();
 		}).error(function(error) {
 			$scope.message = error.message;

@@ -45,6 +45,18 @@ angular.module('app').config(function($stateProvider, $urlRouterProvider) {
 				controller : 'BuildingsController',
 			}
 		}
+	}).state('institutions', {
+		parent : 'nav',
+		url : '/institutions',
+		data : {
+			role : 'ADMIN'
+		},
+		views : {
+			'content@' : {
+				templateUrl : 'app/views/institutions.html',
+				controller : 'InstitutionsController',
+			}
+		}
 	}).state('home', {
 		parent : 'nav',
 		url : '/',

@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -27,6 +28,10 @@ public class Building {
 	@OneToMany(mappedBy = "building", fetch=FetchType.EAGER)
 	@JsonIgnoreProperties(value = {"building"}, allowSetters = true)
 	private Set<AppUser> tenats; // Stanari u zgradi
+	
+	@ManyToMany(mappedBy = "buildings")
+	@JsonIgnoreProperties(value = {"buildings"}, allowSetters = true)
+	private Set<Institution> institutions;
 	
 	public Building() {}
 
@@ -70,10 +75,18 @@ public class Building {
 		this.tenats = tenats;
 	}
 
+	public Set<Institution> getInstitutions() {
+		return institutions;
+	}
+
+	public void setInstitutions(Set<Institution> institutions) {
+		this.institutions = institutions;
+	}
+
 	@Override
 	public String toString() {
-		return "Building [name=" + name + ", tenats=" + tenats + "]";
+		return "Building [id=" + id + ", name=" + name + ", location=" + location + ", numberOfApartments="
+				+ numberOfApartments + ", tenats=" + tenats + ", institutions=" + institutions + "]";
 	}
-	
 	
 }

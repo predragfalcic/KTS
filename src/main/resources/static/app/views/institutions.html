@@ -1,0 +1,112 @@
+<div class="row">
+	<div class="col-sm-4">
+		<div class="panel panel-default">
+			<div class="panel-heading">Institucija</div>
+			<div class="panel-body">
+				<div class="col-md-12">
+					<form ng-submit="submit()" name="institutionForm" novalidate>
+						<div class="form-group"
+							ng-class="{ 'has-error': institutionForm.name.$invalid && institutionForm.name.$dirty }">
+							<label for="name">Naziv:</label> <input type="text" required
+								class="form-control" ng-model="institution.name" id="name"
+								name="name">
+						</div>
+						<div class="form-group"
+							ng-class="{ 'has-error': institutionForm.director.$invalid && institutionForm.director.$dirty }">
+							<label for="director">Direktor:</label> <input type="text" required
+								class="form-control" ng-model="institution.director" id="director"
+								name="director">
+						</div>
+						<div class="form-group"
+							ng-class="{ 'has-error': institutionForm.location.$invalid && institutionForm.location.$dirty }">
+							<label for="location">Location:</label> <input type="text"
+								required class="form-control" ng-model="institution.location"
+								id="location" name="location">
+						</div>
+						<div class="form-group"
+							ng-class="{ 'has-error': institutionForm.email.$invalid && institutionForm.email.$dirty }">
+							<label for="email">Kontakt Email:</label> <input type="email" required
+								class="form-control" ng-model="institution.email" id="email"
+								name="email">
+						</div>
+						<div class="form-group"
+							ng-class="{ 'has-error': institutionForm.contactPhone.$invalid && institutionForm.contactPhone.$dirty }">
+							<label for="contactPhone">Kontakt Telefon:</label> <input type="text"
+								required class="form-control" id="contactPhone"
+								ng-model="institution.contactPhone" name="contactPhone">
+						</div>
+						<div class="form-group"
+							ng-class="{ 'has-error': institutionForm.webSiteUrl.$invalid && institutionForm.webSiteUrl.$dirty }">
+							<label for="webSiteUrl">Veb site institucije:</label> <input type="text"
+								required class="form-control" id="webSiteUrl"
+								ng-model="institution.webSiteUrl" name="webSiteUrl">
+						</div>
+						
+						<div class="form-group"
+							ng-class="{ 'has-error': institutionForm.buildings.$invalid && institutionForm.buildings.$dirty }">
+							<label for="building">Zgrade koje odrzava:</label> 
+							<select ng-options="b.name for b in buildings track by b.id"
+								multiple="multiple" class="form-control"
+								ng-model="institution.buildings" id="building" name="building">
+							</select>
+						</div>
+						
+						<button type="submit" class="btn btn-default"
+							ng-disabled="institutionForm.$invalid">{{buttonText}}</button>
+							
+						<div class="alert alert-info margin-top-5" ng-show="message">{{message}}</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-8">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				Institucije
+				<button type="button" class="btn btn-default btn-sm"
+					ng-click="initAddInstitution()">
+					<span class="glyphicon glyphicon-plus"></span> Nova Institucija
+				</button>
+			</div>
+			<div class="panel-body">
+
+				<div class="alert alert-info margin-top-5" ng-show="deleteMessage">{{deleteMessage}}</div>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Naziv</th>
+							<th>Lokacija</th>
+							<th>Direktor</th>
+							<th>Kontakt Email</th>
+							<th>Kontakt Telefon</th>
+							<th></th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="institution in institutions">
+							<td>{{$index+1}}</td>
+							<td>{{institution.name}}</td>
+							<td>{{institution.location}}</td>
+							<td>{{institution.director}}</td>
+							<td>{{institution.email}}</td>
+							<td>{{institution.contactPhone}}</td>
+							<td><button type="button" class="btn btn-default btn-sm"
+									ng-click="initEdit(institution)">
+									<span class="glyphicon glyphicon-edit"></span>
+								</button></td>
+							<td>
+								<button type="button" class="btn btn-default btn-sm"
+									ng-click="deleteInstitution(institution)">
+									<span class="glyphicon glyphicon-trash"></span>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

@@ -13,13 +13,13 @@
 						</div>
 						<div class="form-group"
 							ng-class="{ 'has-error': buildingForm.location.$invalid && buildingForm.location.$dirty }">
-							<label for="username">Location:</label> <input type="text"
+							<label for="location">Location:</label> <input type="text"
 								required class="form-control" ng-model="building.location"
 								id="location" name="location">
 						</div>
 
 						<div class="form-group"
-							ng-class="{ 'has-error': building.numberOfApartments.$invalid && buildingForm.numberOfApartments.$dirty }">
+							ng-class="{ 'has-error': buildingForm.numberOfApartments.$invalid && buildingForm.numberOfApartments.$dirty }">
 							<label for="pwd">Number of apartments:</label> <input type="number"
 								required class="form-control" id="numberOfApartments"
 								ng-model="building.numberOfApartments" name="numberOfApartments">
@@ -27,7 +27,7 @@
 						
 						<div class="form-group"
 							ng-class="{ 'has-error': buildingForm.tenats.$invalid && buildingForm.tenats.$dirty }">
-							<label for="role">Stanari:</label> 
+							<label for="tenat">Stanari:</label> 
 							<select ng-options="t.name for t in freeTenats"
 								multiple="multiple" class="form-control"
 								ng-model="building.tenats" id="tenat" name="tenat">
@@ -79,6 +79,48 @@
 							<td>
 								<button type="button" class="btn btn-default btn-sm"
 									ng-click="deleteBuilding(building)">
+									<span class="glyphicon glyphicon-trash"></span>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				Institucije nadlezne za zgradu
+			</div>
+			<div class="panel-body">
+
+				<div class="alert alert-info margin-top-5" ng-show="deleteMessageInstitucija">{{deleteMessageInstitucija}}</div>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Naziv</th>
+							<th>Lokacija</th>
+							<th>Direktor</th>
+							<th>Kontakt Email</th>
+							<th>Kontakt Telefon</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="institution in institutions">
+							<td>{{$index+1}}</td>
+							<td>{{institution.name}}</td>
+							<td>{{institution.location}}</td>
+							<td>{{institution.director}}</td>
+							<td>{{institution.email}}</td>
+							<td>{{institution.contactPhone}}</td>
+							<td>
+								<button type="button" class="btn btn-default btn-sm"
+									ng-click="deleteInstitutionFromBuilding(institution)">
 									<span class="glyphicon glyphicon-trash"></span>
 								</button>
 							</td>
