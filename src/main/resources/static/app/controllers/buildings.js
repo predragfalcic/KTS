@@ -11,11 +11,9 @@ angular.module('app')
 	var init = function() {
 		$http.get('api/buildings').success(function(res) {
 			$scope.buildings = res.buildings; // Buildings
-			$scope.freeTenats = res.tenats; // Tenats without building
+			$scope.apartmens = res.apartmens; // apartmens without building
 			$scope.buildingForm.$setPristine();
 			$scope.message='';
-			$scope.building = null;
-			$scope.institutions = null;
 			$scope.buttonText = 'Dodaj';
 		}).error(function(error) {
 			$scope.message = error.message;
@@ -27,6 +25,7 @@ angular.module('app')
 		$scope.building = building;
 		$scope.institutions = building.institutions;
 		$scope.message='';
+		$scope.deleteMessageStan = '';
 		$scope.buttonText = 'Azuriraj';
 	};
 
@@ -35,6 +34,7 @@ angular.module('app')
 		$scope.building = null;
 		$scope.buildingForm.$setPristine();
 		$scope.message='';
+		$scope.deleteMessageStan = '';
 		$scope.institutions = null;
 		$scope.buttonText = 'Dodaj';
 	};
@@ -56,9 +56,37 @@ angular.module('app')
 		});
 		
 		$http.put('api/buildings/' + $scope.building.id + '/' + institution.id).success(function(res) {
-			$scope.building = null;
 			$scope.buildingForm.$setPristine();
 			$scope.deleteMessageInstitucija = "Institucija obrisana uspesno";
+			init();
+		}).error(function(error) {
+			$scope.message =error.message;
+		});
+	};
+	
+	// Brisemo stan iz zgrade
+	$scope.deleteStanFromBuilding = function(stan) {
+		// vraca listu sa svim elementima osim onog koji brisemo
+//		$scope.apartmen.apartmen_tenats = $scope.apartmen.apartmen_tenats.filter(function(el) {
+//		    return el.id !== stanar.id;
+//		});
+//		
+		$http.put('api/buildings/delete/stan/' + $scope.building.id + '/' + stan.id).success(function(res) {
+			$scope.building = res.building;
+			$scope.buildingForm.$setPristine();
+			$scope.deleteMessageStan = "Stan uspesno obrisan iz zgrade";
+			init();
+		}).error(function(error) {
+			$scope.message =error.message;
+		});
+	};
+	
+	// Dodajemo stan u zgradu
+	$scope.addStanToBuilding = function(stan) {
+		$http.put('api/buildings/add/stan/' + $scope.building.id + '/' + stan.id).success(function(res) {
+			$scope.building = res.building;
+			$scope.buildingForm.$setPristine();
+			$scope.deleteMessageStan = "Stan uspesno dodat u zgradu";
 			init();
 		}).error(function(error) {
 			$scope.message =error.message;

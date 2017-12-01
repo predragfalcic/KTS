@@ -1,10 +1,9 @@
 package com.projekat.kts.model;
 
+import java.io.Serializable;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,7 +14,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 @Entity
-public class Building {
+public class Building implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,11 +27,13 @@ public class Building {
 	
 	private String name;
 	private String location;
+	private String owner; // Vlasnik zgrade
 	private int numberOfApartments;
+	private int numberOfAparartmentsWithTenats; // Broj stanova koji su naseljeni
 	
-	@OneToMany(mappedBy = "building", fetch=FetchType.EAGER)
-	@JsonIgnoreProperties(value = {"building"}, allowSetters = true)
-	private Set<AppUser> tenats; // Stanari u zgradi
+	@OneToMany(mappedBy = "apartmenBuilding")
+	@JsonIgnoreProperties(value = {"apartmenBuilding"}, allowSetters = true)
+	private Set<Apartmen> apartments; // stanovi u zgradi
 	
 	@ManyToMany(mappedBy = "buildings")
 	@JsonIgnoreProperties(value = {"buildings"}, allowSetters = true)
@@ -67,14 +73,6 @@ public class Building {
 		this.numberOfApartments = numberOfApartments;
 	}
 
-	public Set<AppUser> getTenats() {
-		return tenats;
-	}
-
-	public void setTenats(Set<AppUser> tenats) {
-		this.tenats = tenats;
-	}
-
 	public Set<Institution> getInstitutions() {
 		return institutions;
 	}
@@ -82,11 +80,34 @@ public class Building {
 	public void setInstitutions(Set<Institution> institutions) {
 		this.institutions = institutions;
 	}
+	
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	public Set<Apartmen> getApartments() {
+		return apartments;
+	}
+
+	public void setApartments(Set<Apartmen> apartments) {
+		this.apartments = apartments;
+	}
+
+	public int getNumberOfAparartmentsWithTenats() {
+		return numberOfAparartmentsWithTenats;
+	}
+
+	public void setNumberOfAparartmentsWithTenats(int numberOfAparartmentsWithTenats) {
+		this.numberOfAparartmentsWithTenats = numberOfAparartmentsWithTenats;
+	}
 
 	@Override
 	public String toString() {
-		return "Building [id=" + id + ", name=" + name + ", location=" + location + ", numberOfApartments="
-				+ numberOfApartments + ", tenats=" + tenats + ", institutions=" + institutions + "]";
+		return "Building [name=" + name + ", apartments=" + apartments + "]";
 	}
 	
 }

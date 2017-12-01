@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.projekat.kts.dto.TenatsBuildingDTO;
-import com.projekat.kts.model.AppUser;
+import com.projekat.kts.dto.ApartmentsBuildingDTO;
+import com.projekat.kts.model.Apartmen;
 import com.projekat.kts.model.Building;
 import com.projekat.kts.model.Institution;
-import com.projekat.kts.repository.AppUserRepository;
+import com.projekat.kts.services.ApartmenService;
 import com.projekat.kts.services.BuildingService;
 import com.projekat.kts.services.InstitutionService;
 
@@ -26,23 +26,23 @@ public class BuildingController {
 	private BuildingService buildingService;
 	
 	@Autowired
-	private AppUserRepository appUserRepository;
+	private InstitutionService institutionService;
 	
 	@Autowired
-	private InstitutionService institutionService;
+	private ApartmenService apartmenService;
 	
 	/**
 	 * Web service for getting all the buildings
-	 * and tenats that have no building yet set from the database
+	 * and apartmens that have no building yet set from the database
 	 * 
 	 * @return list of all Buildings
 	 */
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/buildings", method = RequestMethod.GET)
-	public TenatsBuildingDTO buildings() {
-		TenatsBuildingDTO tb = new TenatsBuildingDTO();
+	public ApartmentsBuildingDTO buildings() {
+		ApartmentsBuildingDTO tb = new ApartmentsBuildingDTO();
 		tb.setBuildings(buildingService.findAll());
-		tb.setTenats(appUserRepository.findByRolesAndHasBuilding("STANAR", false));
+		tb.setApartmens(apartmenService.findByHasBuilding(false));
 		return tb;
 	}
 	
@@ -57,6 +57,7 @@ public class BuildingController {
 	@RequestMapping(value = "/buildings/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Building> buildingById(@PathVariable Long id) {
 		Building building = buildingService.findOneById(id);
+		
 		if (building == null) {
 			return new ResponseEntity<Building>(HttpStatus.NO_CONTENT);
 		} else {
@@ -77,16 +78,16 @@ public class BuildingController {
 		if (building == null) {
 			return new ResponseEntity<Building>(HttpStatus.NO_CONTENT);
 		} else {
-			for (AppUser user : building.getTenats()) {
-				user.setBuilding(null);
-				user.setHasBuilding(false);
-				appUserRepository.save(user);
+			for (Apartmen a : building.getApartments()) {
+				a.setApartmenBuilding(null);
+				a.setHasApartmentBuilding(false);
+				apartmenService.save(a);
 			}
 			for (Institution in : building.getInstitutions()) {
 				in.getBuildings().remove(building);
 				institutionService.save(in);
 			}
-			building.setTenats(null);
+			building.setApartments(null);
 			buildingService.delete(building);
 			return new ResponseEntity<Building>(building, HttpStatus.OK);
 		}
@@ -108,12 +109,6 @@ public class BuildingController {
 		}
 		
 		Building newBuilding = buildingService.save(building);
-
-		for (AppUser tenat : building.getTenats()) {
-			tenat.setBuilding(newBuilding);
-			tenat.setHasBuilding(true);
-			appUserRepository.save(tenat);
-		}
 		
 		return new ResponseEntity<Building>(newBuilding, HttpStatus.CREATED);
 	}
@@ -126,7 +121,7 @@ public class BuildingController {
 	 */
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/buildings", method = RequestMethod.PUT)
-	public TenatsBuildingDTO updateBuilding(@RequestBody Building building) {
+	public ApartmentsBuildingDTO updateBuilding(@RequestBody Building building) {
 		// Check if the building already exists with that name
 		// And that that building is not the one that is being edited
 		Building foundBuilding = buildingService.findOneByName(building.getName());
@@ -135,22 +130,87 @@ public class BuildingController {
 			throw new RuntimeException("Name already exist");
 		}
 		
-		TenatsBuildingDTO tb = new TenatsBuildingDTO();
+		ApartmentsBuildingDTO tb = new ApartmentsBuildingDTO();
 		tb.setBuildings(buildingService.findAll());
-		tb.setTenats(appUserRepository.findByRolesAndHasBuilding("STANAR", false));
-		tb.setTenatsFromBuilding(building.getTenats());
+		tb.setApartmens(apartmenService.findAll());
+		tb.setApartmensFromBuilding(building.getApartments());
 		
-		for (AppUser tenat : building.getTenats()) {
-			tenat.setBuilding(building);
-			tenat.setHasBuilding(true);
-			appUserRepository.save(tenat);
+		if(building.getApartments() != null){
+			for (Apartmen a : building.getApartments()) {
+				a.setApartmenBuilding(building);
+				a.setHasApartmentBuilding(true);
+				apartmenService.save(a);
+			}
 		}
+		
 		buildingService.save(building);
 		System.out.println(building);
 		
 		return tb;
 	}
 	
+	/**
+	 * Method for deleting apartment from building
+	 * 
+	 * @param Long buildingId, Long apartmentId
+	 * @return TenatsApartmenDTO
+	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/buildings/delete/stan/{buildingId}/{apartmentId}", method = RequestMethod.PUT)
+	public ApartmentsBuildingDTO deleteStanFromBuilding(@PathVariable Long buildingId, @PathVariable Long apartmentId) {
+		
+		Building foundBuilding = buildingService.findOneById(buildingId);
+		
+		// Find the apartment to be deleted from building
+		Apartmen apartmen = apartmenService.findOneById(apartmentId);
+		
+		apartmen.setApartmenBuilding(null);
+		apartmen.setHasApartmentBuilding(false);
+
+		apartmenService.save(apartmen);
+		
+		foundBuilding.getApartments().remove(apartmen);
+		
+		buildingService.save(foundBuilding);
+		
+		ApartmentsBuildingDTO tb = new ApartmentsBuildingDTO();
+		tb.setBuildings(buildingService.findAll());
+		tb.setApartmens(apartmenService.findByHasBuilding(false));
+		tb.setApartmensFromBuilding(foundBuilding.getApartments());
+		tb.setBuilding(foundBuilding);
+		return tb;
+	}
+	
+	/**
+	 * Method for adding apartment to building
+	 * 
+	 * @param Long buildingId, Long apartmentId
+	 * @return TenatsApartmenDTO
+	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/buildings/add/stan/{buildingId}/{apartmentId}", method = RequestMethod.PUT)
+	public ApartmentsBuildingDTO AddStanToBuilding(@PathVariable Long buildingId, @PathVariable Long apartmentId) {
+		
+		Building foundBuilding = buildingService.findOneById(buildingId);
+		
+		// Find the apartment to be added to building
+		Apartmen apartmen = apartmenService.findOneById(apartmentId);
+		
+		apartmen.setApartmenBuilding(foundBuilding);
+		apartmen.setHasApartmentBuilding(true);
+		apartmenService.save(apartmen);
+		
+		foundBuilding.getApartments().add(apartmen);
+		
+		buildingService.save(foundBuilding);
+		
+		ApartmentsBuildingDTO tb = new ApartmentsBuildingDTO();
+		tb.setBuildings(buildingService.findAll());
+		tb.setApartmens(apartmenService.findByHasBuilding(false));
+		tb.setApartmensFromBuilding(foundBuilding.getApartments());
+		tb.setBuilding(foundBuilding);
+		return tb;
+	}
 	/**
 	 * Method for deleting institution from building
 	 * 
@@ -159,20 +219,20 @@ public class BuildingController {
 	 */
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/buildings/{buildingId}/{institutionId}", method = RequestMethod.PUT)
-	public TenatsBuildingDTO deleteInstitutionFromBuilding(@PathVariable Long buildingId, @PathVariable Long institutionId) {
+	public ApartmentsBuildingDTO deleteInstitutionFromBuilding(@PathVariable Long buildingId, @PathVariable Long institutionId) {
 		// Check if the building already exists with that name
 		// And that that building is not the one that is being edited
 		Building foundBuilding = buildingService.findOneById(buildingId);
 		
-		TenatsBuildingDTO tb = new TenatsBuildingDTO();
+		ApartmentsBuildingDTO tb = new ApartmentsBuildingDTO();
 		tb.setBuildings(buildingService.findAll());
-		tb.setTenats(appUserRepository.findByRolesAndHasBuilding("STANAR", false));
-		tb.setTenatsFromBuilding(foundBuilding.getTenats());
+		tb.setApartmens(apartmenService.findAll());
+		tb.setApartmensFromBuilding(foundBuilding.getApartments());
 		
-		for (AppUser tenat : foundBuilding.getTenats()) {
-			tenat.setBuilding(foundBuilding);
-			tenat.setHasBuilding(true);
-			appUserRepository.save(tenat);
+		for (Apartmen a : foundBuilding.getApartments()) {
+			a.setApartmenBuilding(foundBuilding);
+			a.setHasApartmentBuilding(true);
+			apartmenService.save(a);
 		}
 		Institution in = institutionService.findOneById(institutionId);
 		// Delete the institution from the building

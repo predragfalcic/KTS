@@ -12,6 +12,12 @@
 								name="name">
 						</div>
 						<div class="form-group"
+							ng-class="{ 'has-error': buildingForm.owner.$invalid && buildingForm.owner.$dirty }">
+							<label for="name">Vlasnik:</label> <input type="text" required
+								class="form-control" ng-model="building.owner" id="owner"
+								name="owner">
+						</div>
+						<div class="form-group"
 							ng-class="{ 'has-error': buildingForm.location.$invalid && buildingForm.location.$dirty }">
 							<label for="location">Location:</label> <input type="text"
 								required class="form-control" ng-model="building.location"
@@ -23,15 +29,6 @@
 							<label for="pwd">Number of apartments:</label> <input type="number"
 								required class="form-control" id="numberOfApartments"
 								ng-model="building.numberOfApartments" name="numberOfApartments">
-						</div>
-						
-						<div class="form-group"
-							ng-class="{ 'has-error': buildingForm.tenats.$invalid && buildingForm.tenats.$dirty }">
-							<label for="tenat">Stanari:</label> 
-							<select ng-options="t.name for t in freeTenats"
-								multiple="multiple" class="form-control"
-								ng-model="building.tenats" id="tenat" name="tenat">
-							</select>
 						</div>
 						
 						<button type="submit" class="btn btn-default"
@@ -61,7 +58,8 @@
 							<th>#</th>
 							<th>Name</th>
 							<th>Location</th>
-							<th>Number of apartments</th>
+							<th>Ukupan broj stanova</th>
+							<th>Useljeni stanovi</th>
 							<th></th>
 							<th></th>
 						</tr>
@@ -72,6 +70,7 @@
 							<td>{{building.name}}</td>
 							<td>{{building.location}}</td>
 							<td>{{building.numberOfApartments}}</td>
+							<td>{{building.numberOfAparartmentsWithTenats}}</td>
 							<td><button type="button" class="btn btn-default btn-sm"
 									ng-click="initEdit(building)">
 									<span class="glyphicon glyphicon-edit"></span>
@@ -80,6 +79,72 @@
 								<button type="button" class="btn btn-default btn-sm"
 									ng-click="deleteBuilding(building)">
 									<span class="glyphicon glyphicon-trash"></span>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				Stanovi u zgradi
+			</div>
+			<div class="panel-body">
+
+				<div class="alert alert-info margin-top-5" ng-show="deleteMessageStan">{{deleteMessageStan}}</div>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Naziv</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="apartman in building.apartments">
+							<td>{{$index+1}}</td>
+							<td>{{apartman.name}}</td>
+							<td>
+								<button ng-show="building" type="button" class="btn btn-default btn-sm"
+									ng-click="deleteStanFromBuilding(apartman)">
+									<span class="glyphicon glyphicon-remove"></span>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				Stanovi bez zgrade
+			</div>
+			<div class="panel-body">
+
+				<div class="alert alert-info margin-top-5" ng-show="dodajMessageStan">{{dodajMessageStan}}</div>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Naziv</th>
+							<th>Dodaj u zgradu</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="a in apartmens">
+							<td>{{$index+1}}</td>
+							<td>{{a.name}}</td>
+							<td>
+								<button ng-show="building" type="button" class="btn btn-default btn-sm"
+									ng-click="addStanToBuilding(a)">
+									<span class="glyphicon glyphicon-plus"></span>
 								</button>
 							</td>
 						</tr>

@@ -1,0 +1,162 @@
+<div class="row">
+	<div class="col-sm-6 ">
+		<div class="panel panel-default">
+			<div class="panel-heading">Apartmen</div>
+			<div class="panel-body">
+				<div class="col-md-12">
+					<form ng-submit="submit()" name="apartmenForm" novalidate>
+						<div class="form-group"
+							ng-class="{ 'has-error': apartmenForm.name.$invalid && apartmenForm.name.$dirty }">
+							<label for="name">Name:</label> <input type="text" required
+								class="form-control" ng-model="apartmen.name" id="name"
+								name="name">
+						</div>
+						<div class="form-group"
+							ng-class="{ 'has-error': apartmenForm.location.$invalid && apartmenForm.location.$dirty }">
+							<label for="location">Location:</label> <input type="text"
+								required class="form-control" ng-model="apartmen.location"
+								id="location" name="location">
+						</div>
+						<button type="submit" class="btn btn-default"
+							ng-disabled="apartmenForm.$invalid">{{buttonText}}</button>
+							
+						<div class="alert alert-info margin-top-5" ng-show="message">{{message}}</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				apartmens
+				<button type="button" class="btn btn-default btn-sm"
+					ng-click="initAddApartmen()">
+					<span class="glyphicon glyphicon-plus"></span> New apartmen
+				</button>
+			</div>
+			<div class="panel-body">
+
+				<div class="alert alert-info margin-top-5" ng-show="deleteMessage">{{deleteMessage}}</div>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Name</th>
+							<th>Location</th>
+							<th>Vlasnik</th>
+							<th>Number of tenats</th>
+							<th>Building</th>
+							<th></th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="a in apartmens">
+							<td>{{$index+1}}</td>
+							<td>{{a.name}}</td>
+							<td>{{a.location}}</td>
+							<td>{{a.owner}}</td>
+							<td>{{a.numberOfApartments}}</td>
+							<td>{{a.building.name}}</td>
+							<td><button type="button" class="btn btn-default btn-sm"
+									ng-click="initEdit(a)">
+									<span class="glyphicon glyphicon-edit"></span>
+								</button></td>
+							<td>
+								<button type="button" class="btn btn-default btn-sm"
+									ng-click="deleteApartmen(a)">
+									<span class="glyphicon glyphicon-trash"></span>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				Stanari apartmana
+			</div>
+			<div class="panel-body">
+
+				<div class="alert alert-info margin-top-5" ng-show="deleteMessageStanar">{{deleteMessageStanar}}</div>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Naziv</th>
+							<th>Email</th>
+							<th>Vlasnik</th>
+							<th>Izaberi vlasnik</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="stanar in apartmen.apartmen_tenats">
+							<td>{{$index+1}}</td>
+							<td>{{stanar.name}}</td>
+							<td>{{stanar.username}}</td>
+							<td>
+								<button ng-show="apartmen && apartmen.hasOwner && stanar.owner" type="button" class="btn btn-default btn-sm"
+									ng-click="deleteOwnerForApartman(stanar)">
+									<span class="glyphicon glyphicon-remove"></span>
+								</button>
+							</td>
+							<td >
+								<button ng-show="apartmen && apartmen.hasOwner === false" type="button" class="btn btn-default btn-sm"
+									ng-click="setOwnerForApartman(stanar)">
+									<span class="glyphicon glyphicon-king"></span>
+								</button>
+							</td>
+							<td>
+								<button ng-show="apartmen" type="button" class="btn btn-default btn-sm"
+									ng-click="deleteStanarFromApartman(stanar)">
+									<span class="glyphicon glyphicon-trash"></span>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				Stanari koji nemaju stan
+			</div>
+			<div class="panel-body">
+
+				<div class="alert alert-info margin-top-5" ng-show="dodajMessageStanar">{{dodajMessageStanar}}</div>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Naziv</th>
+							<th>Email</th>
+							<th>Dodaj u stan</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="stanar in freeTenats">
+							<td>{{$index+1}}</td>
+							<td>{{stanar.name}}</td>
+							<td>{{stanar.username}}</td>
+							<td>
+								<button ng-show="apartmen" type="button" class="btn btn-default btn-sm"
+									ng-click="addStanarToApartman(stanar)">
+									<span class="glyphicon glyphicon-plus"></span>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

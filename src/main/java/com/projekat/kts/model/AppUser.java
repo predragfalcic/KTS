@@ -35,13 +35,18 @@ public class AppUser implements UserDetails {
 		private String username;
 		
 		private String password;
+		
 		@ElementCollection(fetch = FetchType.EAGER)
 		private List<String> roles = new ArrayList<>();
-				
+
 		@ManyToOne
-		@JoinColumn(name = "building_id")
-		@JsonIgnoreProperties(value = {"tenats"}, allowSetters=true)
-		private Building building; // Building in which he lives
+		@JoinColumn(name = "apartmen_id")
+		@JsonIgnoreProperties(value = {"apartmen_tenats"}, allowSetters=true)
+		private Apartmen apartmen; // apartmen in which he lives
+		
+		private boolean owner; // Da li je vlasnik stana
+		private boolean voted; // Da li je glasao za predsednika skupstine stanara
+		private boolean tenatsPresident; // Da li je predsednik skupstine stanara
 		
 		private boolean hasBuilding; // Indicates if the tenat has building or not
 		
@@ -75,14 +80,6 @@ public class AppUser implements UserDetails {
 
 		public void setPassword(String password) {
 			this.password = password;
-		}
-		
-		public Building getBuilding() {
-			return building;
-		}
-
-		public void setBuilding(Building building) {
-			this.building = building;
 		}
 
 		@JsonIgnore
@@ -135,6 +132,38 @@ public class AppUser implements UserDetails {
 
 		public void setHasBuilding(boolean hasBuilding) {
 			this.hasBuilding = hasBuilding;
+		}
+		
+		public Apartmen getApartmen() {
+			return apartmen;
+		}
+
+		public void setApartmen(Apartmen apartmen) {
+			this.apartmen = apartmen;
+		}
+
+		public boolean isOwner() {
+			return owner;
+		}
+
+		public void setOwner(boolean owner) {
+			this.owner = owner;
+		}
+
+		public boolean isVoted() {
+			return voted;
+		}
+
+		public void setVoted(boolean voted) {
+			this.voted = voted;
+		}
+
+		public boolean isTenatsPresident() {
+			return tenatsPresident;
+		}
+
+		public void setTenatsPresident(boolean tenatsPresident) {
+			this.tenatsPresident = tenatsPresident;
 		}
 
 		@Override
