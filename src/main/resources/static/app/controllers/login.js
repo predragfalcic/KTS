@@ -22,17 +22,18 @@ angular.module('app')
  
 				// setting the user in AuthService
 				AuthService.user = res.user;
+				AuthService.userRole = res.user.roles;
 				$rootScope.$broadcast('LoginSuccessful');
-				// going to the home page
+				// go to home page for the logged in user
 				$state.go('home');
 			} else {
 				// if the token is not present in the response then the
 				// authentication was not successful. Setting the error message.
-				$scope.message = 'Authetication Failed !';
+				$scope.message = 'Uneto korisnicko ime ili lozinka nisu ispravni !';
 			}
 		}).error(function(error) {
 			// if authentication was not successful. Setting the error message.
-			$scope.message = 'Authetication Failed !';
+			$scope.message = 'Prijava na sistem neuspesna !';
 		});
 	};
 });

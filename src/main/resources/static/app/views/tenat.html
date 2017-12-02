@@ -1,0 +1,59 @@
+<div class="row">
+	<div class="col-sm-12">
+		<h2>Vasi podaci</h2>
+		<p>Ime: {{tenat.name}}</p>
+		<p ng-show="tenat.owner === true">Vlasnik stana: DA</p>
+		<p ng-show="tenat.owner === false">Vlasnik stana: NE</p>
+		<h4 ng-show="building.hasPresident === false">U toku je glasanje za predsednika skupstine stanara</h4>
+		<p ng-show="tenat.owner === false">Niste vlasnik stana, zato nemate pravo glasanja.</p>
+		<p ng-show="tenat.owner === true && building.hasPresident === false">Osvojeni glasovi: {{tenat.votes}}</p>
+		<h4 ng-show="tenat.tenatsPresident === true">Vi ste predsednik skupstine stanara zgrade</h4>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		<h2>Podaci o stanu</h2>
+		<p>Naziv: {{apartment.name}}</p>
+		<p>Lokacija: {{apartment.location}}</p>
+		<p>Vlasnik: {{apartment.owner}}</p>
+		<p>Broj stanara: {{apartment.numberOfTenats}}</p>
+	</div>
+	<div ng-show="tenat.owner === true && building.hasPresident === false" class="col-sm-6">
+		<h2 ng-show="tenat.voted === false">Glasajte za predsednika skupstine stanara</h2>
+		<h2 ng-show="tenat.voted === true">Trenutno stanje glasanja</h2>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Naziv</th>
+					<th>Email</th>
+					<th>Broj glasova</th>
+					<th ng-show="tenat.voted === false">Glasaj</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="stanar in allOwners">
+					<td>{{$index+1}}</td>
+					<td>{{stanar.name}}</td>
+					<td>{{stanar.username}}</td>
+					<td>{{stanar.votes}}</td>
+					<td ng-show="tenat.voted === false">
+						<button type="button" class="btn btn-default btn-sm"
+							ng-click="voteForPresident(stanar)">
+							<span class="glyphicon glyphicon-king"></span>
+						</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-12">
+		<h2>Podaci o zgradi</h2>
+		<p>Naziv: {{building.name}}</p>
+		<p>Lokacija: {{building.location}}</p>
+		<p>Vlasnik: {{building.owner}}</p>
+		<p>Broj stanova: {{building.numberOfApartments}}</p>
+	</div>
+</div>

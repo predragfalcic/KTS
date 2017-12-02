@@ -10,4 +10,4 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long>{
 
 	public AppUser findOneByUsername(String username);
 	public List<AppUser> findByRolesAndHasBuilding(String role, boolean hasBuilding);
-}
+} 

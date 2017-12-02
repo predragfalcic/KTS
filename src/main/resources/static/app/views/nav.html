@@ -32,10 +32,13 @@
 					<a ui-sref="apartmens" ng-show="userAdmin == true">Apartmani</a>					
 				</li>
 				<li>
-					<a ui-sref="buildings" ng-show="userAdmin == false">Zgrada</a>
+					<a ui-sref="profil" ng-show="userTenat == true">Profil</a>
 				</li>
 				<li>
-					<a ui-sref="institutions">Institucije</a>					
+					<a ui-sref="tenat_institutions" ng-show="userTenat == true">Institucije</a>					
+				</li>
+				<li>
+					<a ui-sref="institutions" ng-show="userAdmin == true">Institucije</a>					
 				</li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">

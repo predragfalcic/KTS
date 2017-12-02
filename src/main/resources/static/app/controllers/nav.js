@@ -14,6 +14,7 @@ angular.module('app')
 	$scope.$on('LoginSuccessful', function() {
 		$scope.user = AuthService.user;
 		$scope.userAdmin = checkOption("ADMIN", AuthService.user.roles);
+		$scope.userTenat = checkOption("STANAR", AuthService.user.roles);
 	});
 	$scope.$on('LogoutSuccessful', function() {
 		$scope.user = null;

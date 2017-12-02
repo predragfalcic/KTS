@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.projekat.kts.model.Apartmen;
 import com.projekat.kts.model.AppUser;
+import com.projekat.kts.model.Building;
 import com.projekat.kts.repository.AppUserRepository;
+import com.projekat.kts.services.ApartmenService;
+import com.projekat.kts.services.BuildingService;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -23,6 +27,12 @@ public class AppUserController {
 
 	@Autowired
 	private AppUserRepository appUserRepository;
+	
+	@Autowired
+	private ApartmenService apartmentService;
+	
+	@Autowired
+	private BuildingService buildingService;
 	
 	/**
 	 * Web service for getting all the appUsers in the application.
@@ -70,6 +80,17 @@ public class AppUserController {
 		} else if (appUser.getUsername().equalsIgnoreCase(loggedUsername)) {
 			throw new RuntimeException("You cannot delete your account");
 		} else {
+			Apartmen apartmen = appUser.getApartmen();
+			if(apartmen.getOwner() != null){
+				if(apartmen.getOwner().equals(appUser.getName())){
+					apartmen.setOwner(null);
+					apartmen.setHasOwner(false);
+					Building building = apartmen.getApartmenBuilding();
+					building.setHasPresident(false);
+					buildingService.save(building);
+					apartmentService.save(apartmen);
+				}
+			}
 			appUserRepository.delete(appUser);
 			return new ResponseEntity<AppUser>(appUser, HttpStatus.OK);
 		}
@@ -89,6 +110,8 @@ public class AppUserController {
 			return new ResponseEntity<AppUser>(HttpStatus.NO_CONTENT);
 		} else {
 			user.setHasBuilding(false);
+			user.setOwner(false);
+			
 			appUserRepository.save(user);
 			return new ResponseEntity<AppUser>(user, HttpStatus.OK);
 		}

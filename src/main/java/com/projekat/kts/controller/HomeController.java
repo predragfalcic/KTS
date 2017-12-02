@@ -53,7 +53,7 @@ public class HomeController {
 			throw new RuntimeException("Username already exist");
 		}
 		List<String> roles = new ArrayList<>();
-		roles.add("USER");
+		roles.add("ADMIN");
 		appUser.setRoles(roles);
 		return new ResponseEntity<AppUser>(appUserRepository.save(appUser), HttpStatus.CREATED);
 	}

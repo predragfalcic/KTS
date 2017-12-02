@@ -30,6 +30,7 @@ public class Building implements Serializable{
 	private String owner; // Vlasnik zgrade
 	private int numberOfApartments;
 	private int numberOfAparartmentsWithTenats; // Broj stanova koji su naseljeni
+	private boolean hasPresident; // Oznacava da li zgrada ima predsednika skupstine stanara
 	
 	@OneToMany(mappedBy = "apartmenBuilding")
 	@JsonIgnoreProperties(value = {"apartmenBuilding"}, allowSetters = true)
@@ -104,10 +105,19 @@ public class Building implements Serializable{
 	public void setNumberOfAparartmentsWithTenats(int numberOfAparartmentsWithTenats) {
 		this.numberOfAparartmentsWithTenats = numberOfAparartmentsWithTenats;
 	}
+	
+	public boolean isHasPresident() {
+		return hasPresident;
+	}
+
+	public void setHasPresident(boolean hasPresident) {
+		this.hasPresident = hasPresident;
+	}
 
 	@Override
 	public String toString() {
 		return "Building [name=" + name + ", apartments=" + apartments + "]";
 	}
+	
 	
 }

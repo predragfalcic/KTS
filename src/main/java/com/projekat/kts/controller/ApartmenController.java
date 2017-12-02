@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.projekat.kts.dto.TenatsApartmenDTO;
 import com.projekat.kts.model.Apartmen;
 import com.projekat.kts.model.AppUser;
+import com.projekat.kts.model.Building;
 import com.projekat.kts.repository.AppUserRepository;
 import com.projekat.kts.services.ApartmenService;
 import com.projekat.kts.services.BuildingService;
@@ -107,6 +108,7 @@ public class ApartmenController {
 			throw new RuntimeException("Name already exist");
 		}
 		apartmen.setNumberOfTenats(0);
+
 		Apartmen newApartmen = apartmenService.save(apartmen);
 		
 		return new ResponseEntity<Apartmen>(newApartmen, HttpStatus.CREATED);
