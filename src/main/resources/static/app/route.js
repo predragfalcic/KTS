@@ -81,6 +81,18 @@ angular.module('app').config(function($stateProvider, $urlRouterProvider) {
 				controller : 'InstitutionsController',
 			}
 		}
+	}).state('tenat_institutions', {
+		parent : 'nav',
+		url : '/tenat_institutions',
+		data : {
+			role : 'STANAR'
+		},
+		views : {
+			'content@' : {
+				templateUrl : 'app/views/tenat_institutions.html',
+				controller : 'TenatInstitutionsController',
+			}
+		}
 	}).state('home', {
 		parent : 'nav',
 		url : '/',

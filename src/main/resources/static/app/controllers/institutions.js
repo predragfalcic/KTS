@@ -12,10 +12,10 @@ angular.module('app')
 		$http.get('api/institutions').success(function(res) {
 			$scope.institutions = res.institutions; // institutions
 			$scope.buildings = res.buildings; // buildings
+			$scope.freeWorkers = res.workers; // Workers without institution
 			$scope.institutionBuildings = []; // institution's buildings
 			$scope.institutionForm.$setPristine();
 			$scope.message='';
-			$scope.institution = null;
 			$scope.buttonText = 'Dodaj';
 		}).error(function(error) {
 			$scope.message = error.message;
@@ -27,6 +27,7 @@ angular.module('app')
 		$scope.institution = institution;
 		$scope.institutionBuildings = institution.buildings;
 		$scope.message='';
+		$scope.deleteMessageWorker = '';
 		$scope.buttonText = 'Azuriraj';
 	};
 
@@ -35,6 +36,7 @@ angular.module('app')
 		$scope.institution = null;
 		$scope.institutionForm.$setPristine();
 		$scope.message='';
+		$scope.deleteMessageWorker = '';
 		$scope.buttonText = 'Dodaj';
 	};
 
@@ -66,6 +68,32 @@ angular.module('app')
 			init();
 		}).error(function(error) {
 			$scope.message = error.message;
+		});
+	};
+	
+	// Brisemo radnika iz institucije
+	$scope.deleteWorkerFromInstitution = function(worker) {
+
+		$http.put('api/institutions/delete/worker/' + $scope.institution.id + '/' + worker.id).success(function(res) {
+			$scope.institution = res.institution;
+			$scope.freeWorkers = res.workers; // Workers without institution
+			$scope.apartmenForm.$setPristine();
+			$scope.deleteMessageWorker = "Radnik uspesno obrisan iz institucije";
+			init();
+		}).error(function(error) {
+			$scope.message =error.message;
+		});
+	};
+	
+	// Dodajemo workera u Institution
+	$scope.addWorkerToInstitution = function(worker) {
+		$http.put('api/institutions/add/worker/' + $scope.institution.id + '/' + worker.id).success(function(res) {
+			$scope.institution = res.institution;
+			$scope.institutionForm.$setPristine();
+			$scope.deleteMessageWorker = "Radnik uspesno dodat u instituciju";
+			init();
+		}).error(function(error) {
+			$scope.message =error.message;
 		});
 	};
 

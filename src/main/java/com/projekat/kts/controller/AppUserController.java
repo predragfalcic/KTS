@@ -96,26 +96,26 @@ public class AppUserController {
 		}
 	}
 	
-	/**
-	 * Method for deleting a user from building
-	 * 
-	 * @param id
-	 * @return
-	 */
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@RequestMapping(value = "/users/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<AppUser> deleteUserFromBuilding(@PathVariable Long id) {
-		AppUser user = appUserRepository.findOne(id);
-		if (user == null) {
-			return new ResponseEntity<AppUser>(HttpStatus.NO_CONTENT);
-		} else {
-			user.setHasBuilding(false);
-			user.setOwner(false);
-			
-			appUserRepository.save(user);
-			return new ResponseEntity<AppUser>(user, HttpStatus.OK);
-		}
-	}
+//	/**
+//	 * Method for deleting a user from building
+//	 * 
+//	 * @param id
+//	 * @return
+//	 */
+//	@PreAuthorize("hasRole('ROLE_ADMIN')")
+//	@RequestMapping(value = "/users/{id}", method = RequestMethod.PUT)
+//	public ResponseEntity<AppUser> deleteUserFromBuilding(@PathVariable Long id) {
+//		AppUser user = appUserRepository.findOne(id);
+//		if (user == null) {
+//			return new ResponseEntity<AppUser>(HttpStatus.NO_CONTENT);
+//		} else {
+//			user.setHasBuilding(false);
+//			user.setOwner(false);
+//			
+//			appUserRepository.save(user);
+//			return new ResponseEntity<AppUser>(user, HttpStatus.OK);
+//		}
+//	}
 
 	/**
 	 * Method for adding a appUser

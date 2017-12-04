@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.projekat.kts.model.Apartmen;
 import com.projekat.kts.model.Building;
+import com.projekat.kts.model.Institution;
 
 /**
  * class that contains all users and all buildings
@@ -19,6 +20,7 @@ public class ApartmentsBuildingDTO {
 	private List<Apartmen> apartmens;
 	private Set<Apartmen> apartmensFromBuilding;
 	private Building building;
+	private List<Institution> institutions;
 	
 	public ApartmentsBuildingDTO() {}
 
@@ -53,5 +55,12 @@ public class ApartmentsBuildingDTO {
 	public void setBuilding(Building building) {
 		this.building = building;
 	}
-	
+
+	public List<Institution> getInstitutions() {
+		return institutions;
+	}
+
+	public void setInstitutions(List<Institution> institutions) {
+		this.institutions = institutions;
+	}
 }

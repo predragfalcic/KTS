@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.projekat.kts.dto.InstitutionBuildingsDTO;
+import com.projekat.kts.dto.WorkerInstitutionDTO;
+import com.projekat.kts.model.AppUser;
 import com.projekat.kts.model.Institution;
+import com.projekat.kts.repository.AppUserRepository;
 import com.projekat.kts.services.BuildingService;
 import com.projekat.kts.services.InstitutionService;
 
@@ -25,6 +27,9 @@ public class InstitutionController {
 	@Autowired
 	private BuildingService buildingService;
 	
+	@Autowired
+	private AppUserRepository appUserRepository;
+	
 	/**
 	 * Web service for getting all the institutions
 	 * and buildings from the database
@@ -33,9 +38,10 @@ public class InstitutionController {
 	 */
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/institutions", method = RequestMethod.GET)
-	public InstitutionBuildingsDTO institutions() {
-		InstitutionBuildingsDTO ib = new InstitutionBuildingsDTO();
+	public WorkerInstitutionDTO institutions() {
+		WorkerInstitutionDTO ib = new WorkerInstitutionDTO();
 		ib.setBuildings(buildingService.findAll());
+		ib.setWorkers(appUserRepository.findByRolesAndHasInstitution("WORKER", false));
 		ib.setInstitutions(institutionService.findAll());
 		return ib;
 	}
@@ -71,6 +77,12 @@ public class InstitutionController {
 		if (in == null) {
 			return new ResponseEntity<Institution>(HttpStatus.NO_CONTENT);
 		} else {
+			for (AppUser a : in.getWorkers()) {
+				a.setInstitution(null);
+				a.setHasInstitution(false);
+				appUserRepository.save(a);
+			}
+			in.setWorkers(null);
 			institutionService.delete(in);
 			return new ResponseEntity<Institution>(in, HttpStatus.OK);
 		}
@@ -104,7 +116,7 @@ public class InstitutionController {
 	 */
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/institutions", method = RequestMethod.PUT)
-	public InstitutionBuildingsDTO updateInstitution(@RequestBody Institution in) {
+	public WorkerInstitutionDTO updateInstitution(@RequestBody Institution in) {
 		// Check if the institution already exists with that name
 		// And that that institution is not the one that is being edited
 		Institution foundInstitution = institutionService.findOneByName(in.getName());
@@ -113,18 +125,86 @@ public class InstitutionController {
 			throw new RuntimeException("Name already exist");
 		}
 		
-		InstitutionBuildingsDTO ib = new InstitutionBuildingsDTO();
+		WorkerInstitutionDTO ib = new WorkerInstitutionDTO();
 		ib.setBuildings(buildingService.findAll());
 		ib.setInstitutions(institutionService.findAll());
 		ib.setInstitutionBuildings(in.getBuildings());
-//		for (AppUser tenat : building.getTenats()) {
-//			tenat.setBuilding(building);
-//			tenat.setHasBuilding(true);
-//			appUserRepository.save(tenat);
-//		}
-//		
+		
+		for (AppUser worker : in.getWorkers()) {
+			worker.setHasInstitution(true);
+			worker.setInstitution(in);
+			appUserRepository.save(worker);
+		}
+		
+		ib.setWorkers(appUserRepository.findByRolesAndHasInstitution("WORKER", false));
+		
 		institutionService.save(in);
 		
 		return ib;
+	}
+	
+	/**
+	 * Method for deleting worker from institution
+	 * 
+	 * @param Long institutionId, Long workerId
+	 * @return WorkerInstitutionDTO
+	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/institutions/delete/worker/{institutionId}/{workerId}", method = RequestMethod.PUT)
+	public WorkerInstitutionDTO deleteWorkerFromInstitution(@PathVariable Long institutionId, @PathVariable Long workerId) {
+		
+		Institution foundInstitution = institutionService.findOneById(institutionId);
+		
+		// Find the worker to be deleted from the institution
+		AppUser worker = appUserRepository.findOne(workerId);
+		
+		worker.setInstitution(null);
+		worker.setHasInstitution(false);
+		
+		appUserRepository.save(worker);
+		
+		foundInstitution.getWorkers().remove(worker);
+		
+		institutionService.save(foundInstitution);
+		
+		WorkerInstitutionDTO tb = new WorkerInstitutionDTO();
+		tb.setInstitutions(institutionService.findAll());
+		tb.setWorkers(appUserRepository.findByRolesAndHasInstitution("WORKER", false));
+		tb.setWorkersFromInstitution(foundInstitution.getWorkers());
+		tb.setInstitution(foundInstitution);
+		tb.setInstitutionBuildings(foundInstitution.getBuildings());
+		return tb;
+	}
+	
+	/**
+	 * Method for adding worker to institution
+	 * 
+	 * @param Long institutionId, Long workerId
+	 * @return WorkerInstitutionDTO
+	 */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/institutions/add/worker/{institutionId}/{workerId}", method = RequestMethod.PUT)
+	public WorkerInstitutionDTO addWorkerFromInstitution(@PathVariable Long institutionId, @PathVariable Long workerId) {
+		
+		Institution foundInstitution = institutionService.findOneById(institutionId);
+		
+		// Find the worker to be deleted from the institution
+		AppUser worker = appUserRepository.findOne(workerId);
+		
+		worker.setInstitution(foundInstitution);
+		worker.setHasInstitution(true);
+		appUserRepository.save(worker);
+		
+		foundInstitution.getWorkers().add(worker);
+		
+		institutionService.save(foundInstitution);
+		
+		WorkerInstitutionDTO tb = new WorkerInstitutionDTO();
+		tb.setInstitutions(institutionService.findAll());
+		tb.setWorkers(appUserRepository.findByRolesAndHasInstitution("WORKER", false));
+		tb.setWorkersFromInstitution(foundInstitution.getWorkers());
+		tb.setInstitution(foundInstitution);
+		tb.setInstitutionBuildings(foundInstitution.getBuildings());
+		return tb;
 	}
 }

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.projekat.kts.dto.TenatsApartmenDTO;
 import com.projekat.kts.model.Apartmen;
 import com.projekat.kts.model.AppUser;
-import com.projekat.kts.model.Building;
 import com.projekat.kts.repository.AppUserRepository;
 import com.projekat.kts.services.ApartmenService;
 import com.projekat.kts.services.BuildingService;

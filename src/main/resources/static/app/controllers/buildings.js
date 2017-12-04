@@ -58,6 +58,7 @@ angular.module('app')
 		$http.put('api/buildings/' + $scope.building.id + '/' + institution.id).success(function(res) {
 			$scope.buildingForm.$setPristine();
 			$scope.deleteMessageInstitucija = "Institucija obrisana uspesno";
+			$scope.institutions = $scope.building.institutions;
 			init();
 		}).error(function(error) {
 			$scope.message =error.message;

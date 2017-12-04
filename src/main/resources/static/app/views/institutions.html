@@ -110,3 +110,73 @@
 		</div>
 	</div>
 </div>
+<div class="row">
+	<div class="col-sm-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				Radnici u instituciji
+			</div>
+			<div class="panel-body">
+
+				<div class="alert alert-info margin-top-5" ng-show="deleteMessageWorker">{{deleteMessageWorker}}</div>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Naziv</th>
+							<th>Email</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="worker in institution.workers">
+							<td>{{$index+1}}</td>
+							<td>{{worker.name}}</td>
+							<td>{{worker.username}}</td>
+							<td>
+								<button ng-show="institution" type="button" class="btn btn-default btn-sm"
+									ng-click="deleteWorkerFromInstitution(worker)">
+									<span class="glyphicon glyphicon-trash"></span>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				Radnici koji nemaju instituciju
+			</div>
+			<div class="panel-body">
+
+				<div class="alert alert-info margin-top-5" ng-show="dodajMessageWorker">{{dodajMessageWorker}}</div>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Naziv</th>
+							<th>Email</th>
+							<th>Dodaj u instituciju</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="worker in freeWorkers">
+							<td>{{$index+1}}</td>
+							<td>{{worker.name}}</td>
+							<td>{{worker.username}}</td>
+							<td>
+								<button ng-show="institution" type="button" class="btn btn-default btn-sm"
+									ng-click="addWorkerToInstitution(worker)">
+									<span class="glyphicon glyphicon-plus"></span>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

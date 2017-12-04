@@ -224,11 +224,6 @@ public class BuildingController {
 		// And that that building is not the one that is being edited
 		Building foundBuilding = buildingService.findOneById(buildingId);
 		
-		ApartmentsBuildingDTO tb = new ApartmentsBuildingDTO();
-		tb.setBuildings(buildingService.findAll());
-		tb.setApartmens(apartmenService.findAll());
-		tb.setApartmensFromBuilding(foundBuilding.getApartments());
-		
 		for (Apartmen a : foundBuilding.getApartments()) {
 			a.setApartmenBuilding(foundBuilding);
 			a.setHasApartmentBuilding(true);
@@ -247,6 +242,11 @@ public class BuildingController {
 		buildingService.save(foundBuilding);
 		institutionService.save(in);
 //		System.out.println(foundBuilding);
+		
+		ApartmentsBuildingDTO tb = new ApartmentsBuildingDTO();
+		tb.setBuildings(buildingService.findAll());
+		tb.setApartmens(apartmenService.findAll());
+		tb.setApartmensFromBuilding(foundBuilding.getApartments());
 		
 		return tb;
 	}

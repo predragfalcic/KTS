@@ -3,6 +3,7 @@ package com.projekat.kts.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -13,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -44,11 +46,22 @@ public class AppUser implements UserDetails {
 	@JsonIgnoreProperties(value = {"apartmen_tenats"}, allowSetters=true)
 	private Apartmen apartmen; // apartmen in which he lives
 	
+	@ManyToOne
+	@JoinColumn(name = "institution_id")
+	@JsonIgnoreProperties(value = {"workers"}, allowSetters=true)
+	private Institution institution; // institution in which he works
+	
+	@OneToMany(mappedBy = "worker", fetch = FetchType.EAGER)
+	@JsonIgnoreProperties(value = {"worker"}, allowSetters = true)
+	@JsonIgnore
+	private Set<Failure> failures; // Kvarovi na kojima je radio
+	
 	private boolean owner; // Da li je vlasnik stana
 	private boolean voted; // Da li je glasao za predsednika skupstine stanara
 	private boolean tenatsPresident; // Da li je predsednik skupstine stanara
 	
 	private boolean hasBuilding; // Indicates if the tenat has building or not
+	private boolean hasInstitution; // Indicates if the tenat has institution or not
 	
 	private int votes; // Glasove koje je dobio sa glasanja
 	
@@ -174,6 +187,22 @@ public class AppUser implements UserDetails {
 
 	public void setVotes(int votes) {
 		this.votes = votes;
+	}
+
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
+	}
+
+	public boolean isHasInstitution() {
+		return hasInstitution;
+	}
+
+	public void setHasInstitution(boolean hasInstitution) {
+		this.hasInstitution = hasInstitution;
 	}
 	
 }

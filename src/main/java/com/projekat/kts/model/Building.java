@@ -1,15 +1,19 @@
 package com.projekat.kts.model;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
@@ -39,6 +43,11 @@ public class Building implements Serializable{
 	@ManyToMany(mappedBy = "buildings")
 	@JsonIgnoreProperties(value = {"buildings"}, allowSetters = true)
 	private Set<Institution> institutions;
+	
+	@OneToMany(mappedBy = "building", fetch = FetchType.EAGER)
+	@JsonIgnoreProperties(value = {"building"}, allowSetters = true)
+	@JsonIgnore
+	private List<Failure> failures; // Kvarovi koji su nastali u zgradi
 	
 	public Building() {}
 
@@ -112,6 +121,14 @@ public class Building implements Serializable{
 
 	public void setHasPresident(boolean hasPresident) {
 		this.hasPresident = hasPresident;
+	}
+	
+	public List<Failure> getFailures() {
+		return failures;
+	}
+
+	public void setFailures(List<Failure> failures) {
+		this.failures = failures;
 	}
 
 	@Override

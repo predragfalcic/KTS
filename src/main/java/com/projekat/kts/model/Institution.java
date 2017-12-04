@@ -1,20 +1,29 @@
 package com.projekat.kts.model;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-public class Institution {
+public class Institution implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,12 +36,21 @@ public class Institution {
 	private String contactPhone;
 	private String webSiteUrl;
 	
-	@ManyToMany(cascade = CascadeType.MERGE)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "institution_building",
     	joinColumns = @JoinColumn(name = "institution_id", referencedColumnName = "id"),
     	inverseJoinColumns = @JoinColumn(name = "building_id", referencedColumnName = "id"))
 	@JsonIgnoreProperties(value = {"institutions"}, allowSetters=true)
 	private Set<Building> buildings; // Buildings which this institution is maintaining
+	
+	@OneToMany(mappedBy = "institution")
+	@JsonIgnoreProperties(value = {"institution"}, allowSetters = true)
+	private Set<AppUser> workers;
+	
+	@OneToMany(mappedBy = "institution", fetch = FetchType.EAGER)
+	@JsonIgnoreProperties(value = {"institution"}, allowSetters = true)
+	@JsonIgnore
+	private Set<Failure> failures; // Kvarovi na kojima je radila institucija
 	
 	public Institution() {}
 
@@ -98,6 +116,22 @@ public class Institution {
 
 	public void setBuildings(Set<Building> buildings) {
 		this.buildings = buildings;
+	}
+	
+	public Set<AppUser> getWorkers() {
+		return workers;
+	}
+
+	public void setWorkers(Set<AppUser> workers) {
+		this.workers = workers;
+	}
+
+	public Set<Failure> getFailures() {
+		return failures;
+	}
+
+	public void setFailures(Set<Failure> failures) {
+		this.failures = failures;
 	}
 
 	@Override

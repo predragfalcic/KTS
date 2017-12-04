@@ -1,21 +1,30 @@
 package com.projekat.kts.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.projekat.kts.dto.BuildingInstitutionFailureDTO;
+import com.projekat.kts.dto.FailureDTO;
 import com.projekat.kts.dto.TenatProfileDTO;
 import com.projekat.kts.model.Apartmen;
 import com.projekat.kts.model.AppUser;
 import com.projekat.kts.model.Building;
+import com.projekat.kts.model.Failure;
+import com.projekat.kts.model.Institution;
 import com.projekat.kts.repository.AppUserRepository;
+import com.projekat.kts.services.BuildingService;
+import com.projekat.kts.services.FailureService;
+import com.projekat.kts.services.InstitutionService;
 
 @RestController
 @RequestMapping(value = "api/")
@@ -23,6 +32,15 @@ public class TenatController {
 	
 	@Autowired
 	private AppUserRepository appUserRepository;
+	
+	@Autowired
+	private InstitutionService institutionService;
+	
+	@Autowired
+	private FailureService failureService;
+	
+	@Autowired
+	private BuildingService buildingService;
 	
 	/**
 	 * Web service for getting the tenat data
@@ -159,6 +177,61 @@ public class TenatController {
 			}
 		}
 		return tenats;
+	}
+	
+	/**
+	 * Web service for creating failure for the building
+	 * 
+	 * @return BuildingInstitutionFailureDTO
+	 */
+	@PreAuthorize("hasRole('ROLE_STANAR')")
+	@RequestMapping(value = "/tenat_institutions/failure", method = RequestMethod.POST)
+	public ResponseEntity<BuildingInstitutionFailureDTO> addFailure(@RequestBody FailureDTO failureDTO) {
+		System.out.println("Naziv kvara: " + failureDTO.getFailure().getDescription());
+		BuildingInstitutionFailureDTO tb = new BuildingInstitutionFailureDTO();
+		AppUser tenat = appUserRepository.findOne(failureDTO.getTenatId());
+		Institution in = institutionService.findOneById(failureDTO.getInstitutionId());
+		Building building = tenat.getApartmen().getApartmenBuilding();
+		
+		if(tenat == null || in == null || building == null){
+			return new ResponseEntity<BuildingInstitutionFailureDTO>(HttpStatus.NO_CONTENT);
+		}
+		// Set data for failure and save it
+		failureDTO.getFailure().setDateCreated(new Date());
+		failureDTO.getFailure().setBuilding(building);
+		failureDTO.getFailure().setInstitution(in);
+		failureService.save(failureDTO.getFailure());
+		
+		// Save building
+		building.getFailures().add(failureDTO.getFailure());
+		buildingService.save(building);
+		
+		// Save institution
+		in.getFailures().add(failureDTO.getFailure());
+		institutionService.save(in);
+		
+		tb.setBuilding(building);
+		tb.setFailures(failureService.findByBuilding(building));
+		tb.setInstitution(in);
+		return new ResponseEntity<BuildingInstitutionFailureDTO>(tb, HttpStatus.OK);
+	}
+	
+	/**
+	 * Web service for getting the failures
+	 * 
+	 * @return BuildingInstitutionFailureDTO
+	 */
+	@PreAuthorize("hasRole('ROLE_STANAR')")
+	@RequestMapping(value = "/tenat_institutions/{id}", method = RequestMethod.GET)
+	public ResponseEntity<BuildingInstitutionFailureDTO> failures(@PathVariable Long id) {
+		BuildingInstitutionFailureDTO tb = new BuildingInstitutionFailureDTO();
+		AppUser tenat = appUserRepository.findOne(id);
+		if(tenat == null){
+			return new ResponseEntity<BuildingInstitutionFailureDTO>(HttpStatus.NO_CONTENT);
+		}
+		tb.setFailures(failureService.findByBuilding(tenat.getApartmen().getApartmenBuilding()));
+		tb.setInstitutions(institutionService.findAll());
+		return new ResponseEntity<BuildingInstitutionFailureDTO>(tb, HttpStatus.OK);
 	}
 	
 	private AppUser getMostVotedTenat(ArrayList<AppUser> tenats){
