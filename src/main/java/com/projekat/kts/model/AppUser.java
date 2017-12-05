@@ -56,6 +56,11 @@ public class AppUser implements UserDetails {
 	@JsonIgnore
 	private Set<Failure> failures; // Kvarovi na kojima je radio
 	
+	@OneToMany(mappedBy = "author")
+	@JsonIgnoreProperties(value = {"author"}, allowSetters = true)
+	@JsonIgnore
+	private List<Comment> comments; // Komentare koje je napisao
+	
 	private boolean owner; // Da li je vlasnik stana
 	private boolean voted; // Da li je glasao za predsednika skupstine stanara
 	private boolean tenatsPresident; // Da li je predsednik skupstine stanara
@@ -212,5 +217,12 @@ public class AppUser implements UserDetails {
 	public void setFailures(Set<Failure> failures) {
 		this.failures = failures;
 	}
-	
+
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
 }

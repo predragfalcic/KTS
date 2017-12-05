@@ -5,6 +5,7 @@ angular.module('app')
 .controller('TenatInstitutionsController', function($http, $scope, AuthService) {
 
 	var add = false;
+	$scope.comments = null;
 	
 	$scope.buttonText = 'Posalji';
 	var init = function() {
@@ -40,6 +41,29 @@ angular.module('app')
 			init();
 		}).error(function(error) {
 			$scope.message =error.message;
+		});
+	};
+	
+	// Prikazujemo detalje kvara
+	$scope.failureDetails = function(f){
+		$scope.failureSelected = null;
+		$scope.failureSelected = f;
+		$http.get('api/komentar/' + $scope.failureSelected.id).success(function(res) {
+			$scope.comments = res;
+			$scope.prihvatiMessage = '';
+		}).error(function(error) {
+			$scope.message = error.message;
+		});
+	};
+	
+	// Kreiranje komentara na kvar
+	$scope.addComment = function(c){
+		var objectDTO = {'comment': c, 'failure': $scope.failureSelected, 'author': AuthService.user}
+		$http.post('api/komentar/', objectDTO).success(function(res){
+			$scope.comments = res;
+			$scope.comment = null;
+		}).error(function(error){
+			$scope.message = error.message;
 		});
 	};
 

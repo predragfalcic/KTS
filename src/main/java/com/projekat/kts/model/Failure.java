@@ -2,16 +2,20 @@ package com.projekat.kts.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -56,6 +60,11 @@ public class Failure implements Serializable {
 	@JoinColumn(name = "building_id")
 	@JsonIgnoreProperties(value = {"failures"}, allowSetters=true)
 	private Building building; // Zgrada u kojoj je kvar nastao
+	
+	@OneToMany(mappedBy = "failure")
+	@JsonIgnoreProperties(value = {"failure"}, allowSetters = true)
+	@JsonIgnore
+	private List<Comment> comments; // Komentare koje je napisao
 	
 	public Failure(){}
 
@@ -153,5 +162,13 @@ public class Failure implements Serializable {
 
 	public void setDateZakazano(Date dateZakazano) {
 		this.dateZakazano = dateZakazano;
+	}
+
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 }

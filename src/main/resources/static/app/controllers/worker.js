@@ -9,6 +9,8 @@ angular.module('app')
 	$scope.failures = null;
 	$scope.prihvatiMessage = '';
 	$scope.dateString = new Date();
+	$scope.comments = null;
+	$scope.comment = null;
 	
 	var init = function() {
 		$http.get('api/worker/' + AuthService.user.id).success(function(res) {
@@ -41,7 +43,12 @@ angular.module('app')
 	$scope.failureDetails = function(f){
 		$scope.failure = null;
 		$scope.failure = f;
-		$scope.prihvatiMessage = '';
+		$http.get('api/komentar/' + $scope.failure.id).success(function(res) {
+			$scope.comments = res;
+			$scope.prihvatiMessage = '';
+		}).error(function(error) {
+			$scope.message = error.message;
+		});
 	};
 	
 	// Radnik prihvata kvar
@@ -110,6 +117,17 @@ angular.module('app')
 			$scope.workerFailures = res.workerFailures; // Kvarovi za koje je ovaj radnik zaduzen
 			$scope.failure = null;
 			$scope.prihvatiMessage = 'Kvar je popravljen.';
+		}).error(function(error){
+			$scope.message = error.message;
+		});
+	};
+	
+	// Kreiranje komentara na kvar
+	$scope.addComment = function(c){
+		var objectDTO = {'comment': c, 'failure': $scope.failure, 'author': AuthService.user}
+		$http.post('api/komentar/', objectDTO).success(function(res){
+			$scope.comments = res;
+			$scope.comment = null;
 		}).error(function(error){
 			$scope.message = error.message;
 		});

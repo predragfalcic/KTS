@@ -78,14 +78,13 @@
 				Kvarovi u zgradi
 			</div>
 			<div class="panel-body">
-
-				<div class="alert alert-info margin-top-5" ng-show="deleteMessage">{{deleteMessage}}</div>
 				<table class="table table-bordered">
 					<thead>
 						<tr>
 							<th>#</th>
 							<th>Naziv</th>
 							<th>Opis</th>
+							<th>Detalji</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -93,10 +92,56 @@
 							<td>{{$index+1}}</td>
 							<td>{{f.name}}</td>
 							<td>{{f.description}}</td>
+							<td>
+								<button type="button" class="btn btn-default btn-sm"
+									ng-click="failureDetails(f)">
+									<span class="glyphicon glyphicon-eye-open"></span>
+								</button>
+							</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
+		</div>
+	</div>
+</div>
+<div ng-show="failureSelected" class="row">
+	<div class="col-sm-12">
+		<h2>Naziv:</h2>
+		<h5>{{failureSelected.name}}</h5>
+		<h3>Opis kvara</h3>
+		<textarea readonly rows="5" cols="">{{failureSelected.description}}</textarea>
+	</div>
+	<br>
+	<div ng-show="failureSelected" class="row">
+		<h4>Napisi komentar za kvar</h4>
+		<label class="control-label" for="inputSmall">Vas komentar</label><br>
+		<input class="form-control input-sm" type="text" ng-model="comment.text"><br>
+		<button class="btn btn-primary" ng-click="addComment(comment)">Posalji</button><br>
+	</div>
+	<h4>Komentari</h4>
+	<br><br>
+	<div class="row">
+		<div class="row" ng-repeat="c in comments">
+			<div class="col-md-2 col-sm-2 hidden-xs">
+            </div>
+            <div class="col-md-10 col-sm-10">
+              <div class="panel panel-default arrow left">
+                <div class="panel-body">
+                  <header class="text-left">
+                    <div class="comment-user"><i class="fa fa-user"></i> {{c.author.name}}</div>
+                    <time class="comment-date"><i class="fa fa-clock-o"></i> {{c.dateCreated | date:'MM/dd/yyyy HH:mm'}}</time>
+                  </header>
+                  <div class="comment-post">
+                    <p>
+                      {{c.text}}
+                    </p>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+			<hr>
 		</div>
 	</div>
 </div>
