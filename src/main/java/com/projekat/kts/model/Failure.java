@@ -35,7 +35,12 @@ public class Failure implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateSolved; // Datum i vreme kada je kvar popravljen
 	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateZakazano; // Datum i vreme za kad je popravka kvara zakazana
+	
 	private boolean solved; // Da li je kvar popravljen
+	private boolean hasWorker; // Da li kvar ima radnika koji radi na njemu
+	private boolean hasZakazano; // Da li je popravka kvars zakazans za odredjen termin
 	
 	@ManyToOne
 	@JoinColumn(name = "app_user_id")
@@ -124,5 +129,29 @@ public class Failure implements Serializable {
 
 	public void setBuilding(Building building) {
 		this.building = building;
+	}
+
+	public boolean isHasWorker() {
+		return hasWorker;
+	}
+
+	public void setHasWorker(boolean hasWorker) {
+		this.hasWorker = hasWorker;
+	}
+
+	public boolean isHasZakazano() {
+		return hasZakazano;
+	}
+
+	public void setHasZakazano(boolean hasZakazano) {
+		this.hasZakazano = hasZakazano;
+	}
+
+	public Date getDateZakazano() {
+		return dateZakazano;
+	}
+
+	public void setDateZakazano(Date dateZakazano) {
+		this.dateZakazano = dateZakazano;
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.projekat.kts.model.AppUser;
 import com.projekat.kts.model.Building;
 import com.projekat.kts.model.Failure;
 import com.projekat.kts.repository.FailureRepository;
@@ -25,5 +26,13 @@ public class FailureService {
 	
 	public List<Failure> findByBuilding(Building building){
 		return failureRepository.findByBuilding(building);
+	}
+	
+	public List<Failure> findByWorker(AppUser worker){
+		return failureRepository.findByWorker(worker);
+	}
+	
+	public Failure findOneById(Long id){
+		return failureRepository.findOne(id);
 	}
 }

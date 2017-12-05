@@ -1,0 +1,157 @@
+<div class="row">
+	<div class="col-sm-12">
+		<h2>Vasi podaci</h2>
+		<p>Ime: {{worker.name}}</p>
+		<p ng-show="worker.hasInstitution === true">Zaposleni: DA</p>
+		<p ng-show="worker.hasInstitution === false">Zaposleni: NE</p>
+	</div>
+</div>
+<div ng-show="worker.hasInstitution === true" class="row">
+	<div class="col-sm-6">
+		<h2>Podaci o instituciji</h2>
+		<p>Naziv: {{institution.name}}</p>
+		<p>Lokacija: {{institution.location}}</p>
+		<p>Vlasnik: {{institution.director}}</p>
+	</div>
+	<div class="col-sm-6">
+		<h2>Zgrade koje odrzava vasa institucija</h2>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Naziv</th>
+					<th>Lokacija</th>
+					<th>Vlasnik</th>
+					<th>Broj stanova</th>
+					<th>Kvarovi</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="b in institution.buildings">
+					<td>{{$index+1}}</td>
+					<td>{{b.name}}</td>
+					<td>{{b.location}}</td>
+					<td>{{b.owner}}</td>
+					<td>{{b.numberOfApartments}}</td>
+					<td>
+						<button type="button" class="btn btn-default btn-sm"
+							ng-click="buildingDetails(b)">
+							<span class="glyphicon glyphicon-cog"></span>
+						</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="row"><div class="alert alert-info margin-top-5" ng-show="prihvatiMessage">{{prihvatiMessage}}</div></div>
+<div ng-show="building" class="row">
+	<h2>Kvarovi u zgradi</h2>
+	<div class="col-sm-6">
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Naziv</th>
+					<th>Radnik</th>
+					<th>Prijavljen</th>
+					<th>Popravljen</th>
+					<th>Detalji</th>
+					<th>Prihvati kvar</th>
+					<th>Otkazi kvar</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="f in failures"
+					ng-class="{true: 'success', false: 'danger'}[f.solved === true]">
+					<td>{{$index+1}}</td>
+					<td>{{f.name}}</td>
+					<td>{{f.worker.name}}</td>
+					<td>{{f.dateCreated | date : 'medium'}}</td>
+					<td>{{f.dateSolved | date : 'medium'}}</td>
+					<td>
+						<button type="button" class="btn btn-default btn-sm"
+							ng-click="failureDetails(f)">
+							<span class="glyphicon glyphicon-eye-open"></span>
+						</button>
+					</td>
+					<td>
+						<button ng-show="f.hasWorker === false" type="button" class="btn btn-default btn-sm"
+							ng-click="prihvati(f)">
+							<span class="glyphicon glyphicon-wrench"></span>
+						</button>
+					</td>
+					<td>
+						<button ng-show="f.hasWorker === true && f.worker.id === worker.id && f.solved === false" type="button" class="btn btn-default btn-sm"
+							ng-click="otkazi(f)">
+							<span class="glyphicon glyphicon-remove"></span>
+						</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="col-sm-6">
+		<h2>Naziv:</h2>
+		<h5>{{failure.name}}</h5>
+		<h3>Opis kvara</h3>
+		<textarea rows="5" cols="">{{failure.description}}</textarea>
+	</div>
+</div>
+<div class="row">
+	<h2>Kvarovi za koje ste zaduzeni</h2>
+	<div class="col-sm-6">
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Naziv</th>
+					<th>Radnik</th>
+					<th>Prijavljen</th>
+					<th>Popravljen</th>
+					<th>Zakazana popravka</th>
+					<th>Datum popravke</th>
+					<th>Zakazi popravku</th>
+					<th>Otkazi popravku</th>
+					<th>Zavrsen posao</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="f in workerFailures"
+					ng-class="{true: 'success', false: 'danger'}[f.solved === true]">
+					<td>{{$index+1}}</td>
+					<td>{{f.name}}</td>
+					<td>{{f.worker.name}}</td>
+					<td>{{f.dateCreated | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+					<td>{{f.dateSolved | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+					<td>{{f.dateZakazano | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+					<td><input type="datetime-local" ng-model="dateString"/></td>
+					<td>
+						<button ng-show="f.hasZakazano === false" type="button" class="btn btn-default btn-sm"
+							ng-click="zakaziPopravku(f)">
+							<span class="glyphicon glyphicon-time"></span>
+						</button>
+					</td>
+					<td>
+						<button ng-show="f.hasZakazano && f.solved === false" type="button" class="btn btn-default btn-sm"
+							ng-click="otkaziPopravku(f)">
+							<span class="glyphicon glyphicon-remove"></span>
+						</button>
+					</td>
+					<td>
+						<button ng-show="f.hasZakazano && f.solved === false" type="button" class="btn btn-default btn-sm"
+							ng-click="zavrsenPosao(f)">
+							<span class="glyphicon glyphicon-ok"></span>
+						</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+
+
+
+
+

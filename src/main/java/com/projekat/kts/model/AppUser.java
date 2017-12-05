@@ -204,5 +204,13 @@ public class AppUser implements UserDetails {
 	public void setHasInstitution(boolean hasInstitution) {
 		this.hasInstitution = hasInstitution;
 	}
+
+	public Set<Failure> getFailures() {
+		return failures;
+	}
+
+	public void setFailures(Set<Failure> failures) {
+		this.failures = failures;
+	}
 	
 }

@@ -7,5 +7,7 @@ angular.module('app')
 		$state.go("buildings");
 	}else if(userRole.indexOf("STANAR") > -1){
 		$state.go("profil");
+	}else if(userRole.indexOf("WORKER") > -1){
+		$state.go("worker");
 	}
 });
