@@ -1,0 +1,97 @@
+<h1>Sednice</h1>
+<div class="row">
+	<div class="col-sm-6">
+		<div class="row">
+			<div ng-show="tenat.tenatsPresident" class="col-sm-6">
+				<label>Zakazi sednicu</label>
+				<input type="datetime-local" ng-model="dateString"/>
+				
+				<button type="submit" ng-click="addSednica()" class="btn btn-default">Zakazi</button>
+					
+				<div class="alert alert-info margin-top-5" ng-show="addSednicaMessage">{{addSednicaMessage}}</div>
+			</div>
+		</div>
+		<div ng-show="sednica.active" class="row">
+			<h3>Stavka</h3>
+			<div class="alert alert-info margin-top-5" ng-show="stavkaMessage">{{stavkaMessage}}</div>
+			<div class="alert alert-info margin-top-5" ng-show="message">{{message}}</div>
+		
+			<div class="form-group">
+				<label>Naziv: </label>
+				<input type="text" ng-model="stavka.name" required="required">
+			</div>
+			
+			<div class="form-group">
+				<label>Opis: </label>
+				<textarea rows="5" ng-model="stavka.description" required="required">
+				</textarea>
+			</div>
+			<div class="form-group">
+				<button type="submit" ng-click="addStavka()" class="btn btn-default">Dodaj stavku</button>
+			</div>
+		</div>
+		<div ng-show="sednica.active && tenat.tenatsPresident" class="row">
+			<h3>Zapisnik</h3>
+			<div class="alert alert-info margin-top-5" ng-show="zapisnikMessage">{{zapisnikMessage}}</div>
+			<div class="alert alert-info margin-top-5" ng-show="message">{{message}}</div>
+
+			
+			<div class="form-group">
+				<label>Opis: </label>
+				<textarea rows="5" ng-model="zap.description" required="required">
+				</textarea>
+			</div>
+			<div class="form-group">
+				<button type="submit" ng-click="addZapisnik()" class="btn btn-default">Dodaj zapisnik</button>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6">
+			<label>Sednice vase zgrade</label>
+			<table class="table table-bordered"
+				   ng-class="{true: 'success', false: 'warning'}[s.sctive === true]">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Kreirana</th>
+						<th>Zakazana</th>
+						<th>Predsednik</th>
+						<th>Detalji</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="s in sednice">
+						<td>{{$index+1}}</td>
+						<td>{{s.dateCreated | date : 'medium'}}</td>
+						<td>{{s.dateScheduled | date : 'medium'}}</td>
+						<td>{{s.creator.name}}</td>
+						<td>
+							<button type="button" class="btn btn-default btn-sm"
+								ng-click="sednicaDetails(s)">
+								<span class="glyphicon glyphicon-eye-open"></span>
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+</div>
+<div ng-show="sednica" class="row">
+	<label>Stavke sednice</label>
+	<div ng-repeat="stavka in stavke" class="col-sm-12">
+		<h3>{{stavka.name}}</h3>
+		<h5>{{stavka.tenat.name}} - {{stavka.dateCreated | date : 'medium'}}</h5>
+		<p>{{stavka.description}}</p>
+		<br>
+	</div>
+	<hr>
+</div>
+<div  ng-show="sednica" class="row">
+	<label>Zapisnik sa sednice</label>
+	<div class="col-sm-12">
+		<div class="col-sm-6">
+			<h5>{{zapisnik.creator.name}} - {{zapisnik.dateCreated | date : 'medium'}}</h5>
+			<p>{{zapisnik.description}}</p>
+		</div>
+	</div>
+</div>

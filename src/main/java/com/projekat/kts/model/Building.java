@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -52,6 +51,11 @@ public class Building implements Serializable{
 	@JsonIgnoreProperties(value = {"building"}, allowSetters = true)
 	@JsonIgnore
 	private List<Notification> notifications; // Obavestenja koja je postavio
+	
+	@OneToMany(mappedBy = "building")
+	@JsonIgnoreProperties(value = {"building"}, allowSetters = true)
+	@JsonIgnore
+	private List<Sednica> sednice; // Sednice koje pripadaju zgradi
 	
 	public Building() {}
 
@@ -147,6 +151,12 @@ public class Building implements Serializable{
 	public String toString() {
 		return "Building [name=" + name + ", apartments=" + apartments + "]";
 	}
-	
-	
+
+	public List<Sednica> getSednice() {
+		return sednice;
+	}
+
+	public void setSednice(List<Sednica> sednice) {
+		this.sednice = sednice;
+	}
 }

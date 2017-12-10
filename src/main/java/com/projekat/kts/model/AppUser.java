@@ -71,6 +71,16 @@ public class AppUser implements UserDetails {
 	@JsonIgnore
 	private List<Notification> notifications; // Obavestenja koja je postavio
 	
+	@OneToMany(mappedBy = "tenat")
+	@JsonIgnoreProperties(value = {"tenat"}, allowSetters = true)
+	@JsonIgnore
+	private List<Stavka> stavke; // stavke koje je postavio
+	
+	@OneToMany(mappedBy = "creator")
+	@JsonIgnoreProperties(value = {"creator"}, allowSetters = true)
+	@JsonIgnore
+	private List<Sednica> sednice; // Sednice koje je kreirao
+	
 	boolean owner; // Da li je vlasnik stana
 	private boolean voted; // Da li je glasao za predsednika skupstine stanara
 	private boolean tenatsPresident; // Da li je predsednik skupstine stanara
@@ -234,5 +244,29 @@ public class AppUser implements UserDetails {
 
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
+	}
+
+	public List<Notification> getNotifications() {
+		return notifications;
+	}
+
+	public void setNotifications(List<Notification> notifications) {
+		this.notifications = notifications;
+	}
+
+	public List<Stavka> getStavke() {
+		return stavke;
+	}
+
+	public void setStavke(List<Stavka> stavke) {
+		this.stavke = stavke;
+	}
+
+	public List<Sednica> getSednice() {
+		return sednice;
+	}
+
+	public void setSednice(List<Sednica> sednice) {
+		this.sednice = sednice;
 	}
 }

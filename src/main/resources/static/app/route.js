@@ -21,6 +21,15 @@ angular.module('app').config(function($stateProvider, $urlRouterProvider) {
 				controller : 'LoginController'
 			}
 		}
+	}).state('sednica', {
+		parent : 'nav',
+		url : '/sednica',
+		views : {
+			'content@' : {
+				templateUrl : 'app/views/sednica.html',
+				controller : 'SednicaController'
+			}
+		}
 	}).state('users', {
 		parent : 'nav',
 		url : '/users',

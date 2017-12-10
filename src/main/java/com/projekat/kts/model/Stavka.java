@@ -15,12 +15,13 @@ import javax.persistence.TemporalType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * Obavestenja koja pisu stanari zgrade i dostupna su svima
+ * 
  * @author Predrag Falcic
  *
  */
+
 @Entity
-public class Notification implements Serializable {
+public class Stavka implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -30,20 +31,20 @@ public class Notification implements Serializable {
 	private String name;
 	private String description;
 	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateCreated;
+	
 	@ManyToOne
 	@JoinColumn(name = "app_user_id")
-	@JsonIgnoreProperties(value = {"notifications"}, allowSetters=true)
-	private AppUser tenat; // Ko je napisao obavestenje
+	@JsonIgnoreProperties(value = {"stavke"}, allowSetters=true)
+	private AppUser tenat; // Ko je napisao stavku
 	
 	@ManyToOne
-	@JoinColumn(name = "building_id")
-	@JsonIgnoreProperties(value = {"notifications"}, allowSetters=true)
-	private Building building; // Kojoj zgradi pripadaju obavestenja
+	@JoinColumn(name = "sednica_id")
+	@JsonIgnoreProperties(value = {"stavke"}, allowSetters=true)
+	private Sednica sednica; // Kojoj sednici pripada stavka
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date dateCreated; // Datum i vreme kada je obavestenje kreirano
-	
-	public Notification(){}
+	public Stavka(){}
 
 	public Long getId() {
 		return id;
@@ -77,19 +78,19 @@ public class Notification implements Serializable {
 		this.tenat = tenat;
 	}
 
+	public Sednica getSednica() {
+		return sednica;
+	}
+
+	public void setSednica(Sednica sednica) {
+		this.sednica = sednica;
+	}
+
 	public Date getDateCreated() {
 		return dateCreated;
 	}
 
 	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;
-	}
-
-	public Building getBuilding() {
-		return building;
-	}
-
-	public void setBuilding(Building building) {
-		this.building = building;
 	}
 }
