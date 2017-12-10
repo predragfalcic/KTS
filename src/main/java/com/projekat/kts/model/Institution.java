@@ -47,7 +47,7 @@ public class Institution implements Serializable{
 	@JsonIgnoreProperties(value = {"institution"}, allowSetters = true)
 	private Set<AppUser> workers;
 	
-	@OneToMany(mappedBy = "institution", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "institution")
 	@JsonIgnoreProperties(value = {"institution"}, allowSetters = true)
 	@JsonIgnore
 	private Set<Failure> failures; // Kvarovi na kojima je radila institucija

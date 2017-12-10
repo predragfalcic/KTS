@@ -15,16 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.projekat.kts.dto.BuildingInstitutionFailureDTO;
 import com.projekat.kts.dto.FailureDTO;
+import com.projekat.kts.dto.NotificationDTO;
 import com.projekat.kts.dto.TenatProfileDTO;
 import com.projekat.kts.model.Apartmen;
 import com.projekat.kts.model.AppUser;
 import com.projekat.kts.model.Building;
-import com.projekat.kts.model.Failure;
 import com.projekat.kts.model.Institution;
+import com.projekat.kts.model.Notification;
 import com.projekat.kts.repository.AppUserRepository;
 import com.projekat.kts.services.BuildingService;
 import com.projekat.kts.services.FailureService;
 import com.projekat.kts.services.InstitutionService;
+import com.projekat.kts.services.NotificationService;
 
 @RestController
 @RequestMapping(value = "api/")
@@ -42,6 +44,9 @@ public class TenatController {
 	@Autowired
 	private BuildingService buildingService;
 	
+	@Autowired
+	private NotificationService notificationService;
+	
 	/**
 	 * Web service for getting the tenat data
 	 * 
@@ -58,6 +63,7 @@ public class TenatController {
 		tb.setTenat(tenat);
 		tb.setApartmen(tenat.getApartmen());
 		tb.setBuilding(tenat.getApartmen().getApartmenBuilding());
+		tb.setNotifications(notificationService.findByBuilding(tenat.getApartmen().getApartmenBuilding()));
 		return new ResponseEntity<TenatProfileDTO>(tb, HttpStatus.OK);
 	}
 	
@@ -162,6 +168,7 @@ public class TenatController {
 		
 		tb.setApartmen(tenatHasVoted.getApartmen());
 		tb.setBuilding(tenatHasVoted.getApartmen().getApartmenBuilding());
+		tb.setNotifications(notificationService.findByBuilding(tenatHasVoted.getApartmen().getApartmenBuilding()));
 		
 		return new ResponseEntity<TenatProfileDTO>(tb, HttpStatus.OK);
 	}
@@ -247,7 +254,34 @@ public class TenatController {
 		return president;
 	}
 	
-	
+	/**
+	 * Web service for creating notification
+	 * 
+	 * @return TenatProfileDTO
+	 */
+	@PreAuthorize("hasRole('ROLE_STANAR')")
+	@RequestMapping(value = "/profil/notification/", method = RequestMethod.POST)
+	public ResponseEntity<TenatProfileDTO> addNotification(@RequestBody NotificationDTO notificationDTO) {
+		TenatProfileDTO tb = new TenatProfileDTO();
+		System.out.println(notificationDTO.getNotification().getDescription());
+		AppUser tenat = appUserRepository.findOne(notificationDTO.getTenat().getId());
+		if(tenat == null){
+			return new ResponseEntity<TenatProfileDTO>(HttpStatus.NO_CONTENT);
+		}
+		
+		Notification notification = notificationDTO.getNotification();
+		notification.setDateCreated(new Date());
+		notification.setTenat(tenat);
+		notification.setBuilding(tenat.getApartmen().getApartmenBuilding());
+		
+		notificationService.save(notification);
+		
+		tb.setTenat(tenat);
+		tb.setApartmen(tenat.getApartmen());
+		tb.setBuilding(tenat.getApartmen().getApartmenBuilding());
+		tb.setNotifications(notificationService.findByBuilding(tenat.getApartmen().getApartmenBuilding()));
+		return new ResponseEntity<TenatProfileDTO>(tb, HttpStatus.OK);
+	}
 	
 	
 }

@@ -1,8 +1,11 @@
 package com.projekat.kts.dto;
 
+import java.util.List;
+
 import com.projekat.kts.model.Apartmen;
 import com.projekat.kts.model.AppUser;
 import com.projekat.kts.model.Building;
+import com.projekat.kts.model.Notification;
 
 /**
  * 
@@ -16,6 +19,7 @@ public class TenatProfileDTO {
 	private AppUser tenat;
 	private Apartmen apartmen;
 	private Building building;
+	private List<Notification> notifications;
 	
 	public TenatProfileDTO(){}
 
@@ -41,5 +45,13 @@ public class TenatProfileDTO {
 
 	public void setBuilding(Building building) {
 		this.building = building;
+	}
+
+	public List<Notification> getNotifications() {
+		return notifications;
+	}
+
+	public void setNotifications(List<Notification> notifications) {
+		this.notifications = notifications;
 	}
 }

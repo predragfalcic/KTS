@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -44,10 +43,15 @@ public class Building implements Serializable{
 	@JsonIgnoreProperties(value = {"buildings"}, allowSetters = true)
 	private Set<Institution> institutions;
 	
-	@OneToMany(mappedBy = "building", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "building")
 	@JsonIgnoreProperties(value = {"building"}, allowSetters = true)
 	@JsonIgnore
 	private List<Failure> failures; // Kvarovi koji su nastali u zgradi
+	
+	@OneToMany(mappedBy = "building")
+	@JsonIgnoreProperties(value = {"building"}, allowSetters = true)
+	@JsonIgnore
+	private List<Notification> notifications; // Obavestenja koja je postavio
 	
 	public Building() {}
 
@@ -129,6 +133,14 @@ public class Building implements Serializable{
 
 	public void setFailures(List<Failure> failures) {
 		this.failures = failures;
+	}
+
+	public List<Notification> getNotifications() {
+		return notifications;
+	}
+
+	public void setNotifications(List<Notification> notifications) {
+		this.notifications = notifications;
 	}
 
 	@Override

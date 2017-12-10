@@ -14,6 +14,11 @@ import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+/**
+ * 
+ * @author Predrag Falcic
+ *
+ */
 @Entity
 public class Comment implements Serializable {
 

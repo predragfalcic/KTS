@@ -1,5 +1,5 @@
 <div class="row">
-	<div class="col-sm-12">
+	<div class="col-sm-6">
 		<h2>Vasi podaci</h2>
 		<p>Ime: {{tenat.name}}</p>
 		<p ng-show="tenat.owner === true">Vlasnik stana: DA</p>
@@ -8,6 +8,31 @@
 		<p ng-show="tenat.owner === false">Niste vlasnik stana, zato nemate pravo glasanja.</p>
 		<p ng-show="tenat.owner === true && building.hasPresident === false">Osvojeni glasovi: {{tenat.votes}}</p>
 		<h4 ng-show="tenat.tenatsPresident === true">Vi ste predsednik skupstine stanara zgrade</h4>
+	</div>
+	<div class="col-sm-6">
+		<div class="row">
+			<h3>Dodaj obavestenje</h3>
+			<form ng-submit="addNotification()">
+				<div class="form-group">
+					<label for="opis">Opis:</label>
+					<textarea type="text"
+						class="form-control" ng-model="notification.description" id="opis"></textarea>
+				</div>
+				
+				<button type="submit" class="btn btn-default">Dodaj</button>
+				
+				<div class="alert alert-info margin-top-5" ng-show="addNotificationMessage">{{addNotificationMessage}}</div>
+			</form>
+		</div>
+		<div class="row">
+			<h2>Obavestenja</h2>
+			<div ng-repeat="not in notifications">
+				<h4>{{not.name}}</h4>
+				<h6>{{not.tenat.name}} - {{not.dateCreated | date : 'medium'}}</h6>
+				<p>{{not.description}}</p>
+				<hr>
+			</div>
+		</div>
 	</div>
 </div>
 <div class="row">
