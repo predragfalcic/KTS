@@ -1,7 +1,5 @@
 package com.projekat.kts.dto;
 
-import java.util.Date;
-
 import com.projekat.kts.model.Failure;
 
 public class FailureDateDTO {

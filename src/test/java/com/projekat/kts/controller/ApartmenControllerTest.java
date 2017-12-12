@@ -1,4 +1,6 @@
-package com.projekat.kts;
+package com.projekat.kts.controller;
+
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,9 +9,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class KtsApplicationTests {
-
-	@Test
-	public void contextLoads() {}
+public class ApartmenControllerTest {
 
 }

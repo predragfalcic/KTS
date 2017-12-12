@@ -1,6 +1,5 @@
 package com.projekat.kts.dto;
 
-import com.projekat.kts.model.AppUser;
 import com.projekat.kts.model.Stavka;
 
 public class StavkaDTO {
