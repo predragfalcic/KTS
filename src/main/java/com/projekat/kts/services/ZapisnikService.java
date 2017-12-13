@@ -22,8 +22,4 @@ public class ZapisnikService {
 	public Zapisnik save(Zapisnik zapisnik){
 		return zapisnikRepository.save(zapisnik);
 	}
-	
-	public void delete(Zapisnik zapisnik){
-		zapisnikRepository.delete(zapisnik);
-	}
 }

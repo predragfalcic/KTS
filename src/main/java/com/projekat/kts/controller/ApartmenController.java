@@ -135,14 +135,16 @@ public class ApartmenController {
 		tb.setTenats(appUserRepository.findByRolesAndHasBuilding("STANAR", false));
 		tb.setTenatsFromApartmen(apartmen.getApartmen_tenats());
 		
-		for (AppUser tenat : apartmen.getApartmen_tenats()) {
-			tenat.setHasBuilding(true);
-			tenat.setApartmen(apartmen);
-			appUserRepository.save(tenat);
+		if(apartmen.getApartmen_tenats() != null){
+			for (AppUser tenat : apartmen.getApartmen_tenats()) {
+				tenat.setHasBuilding(true);
+				tenat.setApartmen(apartmen);
+				appUserRepository.save(tenat);
+			}
+			apartmen.setNumberOfTenats(apartmen.getApartmen_tenats().size());
 		}
-		apartmen.setNumberOfTenats(apartmen.getApartmen_tenats().size());
 		apartmenService.save(apartmen);
-		System.out.println(apartmen);
+//		System.out.println(apartmen);
 		
 		return tb;
 	}

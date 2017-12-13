@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.projekat.kts.model.Sednica;
 import com.projekat.kts.model.Stavka;
-import com.projekat.kts.model.StavkaRepository;
+import com.projekat.kts.repository.StavkaRepository;
 
 @Service
 public class StavkaService {
@@ -23,7 +23,7 @@ public class StavkaService {
 		return stavkaRepository.save(stavka);
 	}
 	
-	public void delete(Stavka stavka){
-		stavkaRepository.delete(stavka);
+	public List<Stavka> findAll(){
+		return stavkaRepository.findAll();
 	}
 }
