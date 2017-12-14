@@ -19,11 +19,11 @@ public class NotificationService {
 		return notificationRepository.save(notification);
 	}
 	
-	public void delete(Notification notification){
-		notificationRepository.delete(notification);
-	}
-	
 	public List<Notification> findByBuilding(Building building){
 		return notificationRepository.findByBuilding(building);
+	}
+	
+	public List<Notification> findAll(){
+		return notificationRepository.findAll();
 	}
 }

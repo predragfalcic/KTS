@@ -21,5 +21,13 @@ public class BuldingConstants {
 	public static final int DB_UMBER_OF_APARTMENS_WITH_TENATS = 0;
 	public static final boolean DB_HAS_PRESIDENT = false;
 	
+	public static final Long DB_ID1 = 4L;
+    public static final String DB_NAME1 = "Zgrada1";
+	public static final String DB_LOCATION1 = "lokacija1";
+	public static final String DB_OWNER1 = "vlasnik1";
+	public static final int DB_NUMBER_OF_APARTMENS1 = 30;
+	public static final int DB_UMBER_OF_APARTMENS_WITH_TENATS1 = 0;
+	public static final boolean DB_HAS_PRESIDENT1 = true;
+	
 	public static final int DB_COUNT_BUILDING = 2;
 }

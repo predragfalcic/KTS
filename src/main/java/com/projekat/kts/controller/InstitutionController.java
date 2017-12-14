@@ -124,16 +124,17 @@ public class InstitutionController {
 				&& foundInstitution.getId() != in.getId()) {
 			throw new RuntimeException("Name already exist");
 		}
-		
 		WorkerInstitutionDTO ib = new WorkerInstitutionDTO();
 		ib.setBuildings(buildingService.findAll());
 		ib.setInstitutions(institutionService.findAll());
 		ib.setInstitutionBuildings(in.getBuildings());
 		
-		for (AppUser worker : in.getWorkers()) {
-			worker.setHasInstitution(true);
-			worker.setInstitution(in);
-			appUserRepository.save(worker);
+		if(in.getWorkers() != null){
+			for (AppUser worker : in.getWorkers()) {
+				worker.setHasInstitution(true);
+				worker.setInstitution(in);
+				appUserRepository.save(worker);
+			}
 		}
 		
 		ib.setWorkers(appUserRepository.findByRolesAndHasInstitution("WORKER", false));

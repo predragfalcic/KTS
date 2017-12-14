@@ -23,10 +23,6 @@ public class SednicaService {
 		return sednicaRepository.save(sednica);
 	}
 	
-	public void delete(Sednica sednica){
-		sednicaRepository.delete(sednica);
-	}
-	
 	public Sednica findById(Long id){
 		return sednicaRepository.findOne(id);
 	}

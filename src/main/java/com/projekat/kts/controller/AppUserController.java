@@ -80,42 +80,25 @@ public class AppUserController {
 		} else if (appUser.getUsername().equalsIgnoreCase(loggedUsername)) {
 			throw new RuntimeException("You cannot delete your account");
 		} else {
-			Apartmen apartmen = appUser.getApartmen();
-			if(apartmen.getOwner() != null){
-				if(apartmen.getOwner().equals(appUser.getName())){
-					apartmen.setOwner(null);
-					apartmen.setHasOwner(false);
-					Building building = apartmen.getApartmenBuilding();
-					building.setHasPresident(false);
-					buildingService.save(building);
-					apartmentService.save(apartmen);
+			if(appUser.getApartmen() != null){
+				Apartmen apartmen = appUser.getApartmen();
+				if(apartmen.getOwner() != null){
+					if(apartmen.getOwner().equals(appUser.getName())){
+						apartmen.setOwner(null);
+						apartmen.setHasOwner(false);
+						if(apartmen.getApartmenBuilding() != null){
+							Building building = apartmen.getApartmenBuilding();
+							building.setHasPresident(false);
+							buildingService.save(building);
+						}
+						apartmentService.save(apartmen);
+					}
 				}
 			}
 			appUserRepository.delete(appUser);
 			return new ResponseEntity<AppUser>(appUser, HttpStatus.OK);
 		}
 	}
-	
-//	/**
-//	 * Method for deleting a user from building
-//	 * 
-//	 * @param id
-//	 * @return
-//	 */
-//	@PreAuthorize("hasRole('ROLE_ADMIN')")
-//	@RequestMapping(value = "/users/{id}", method = RequestMethod.PUT)
-//	public ResponseEntity<AppUser> deleteUserFromBuilding(@PathVariable Long id) {
-//		AppUser user = appUserRepository.findOne(id);
-//		if (user == null) {
-//			return new ResponseEntity<AppUser>(HttpStatus.NO_CONTENT);
-//		} else {
-//			user.setHasBuilding(false);
-//			user.setOwner(false);
-//			
-//			appUserRepository.save(user);
-//			return new ResponseEntity<AppUser>(user, HttpStatus.OK);
-//		}
-//	}
 
 	/**
 	 * Method for adding a appUser

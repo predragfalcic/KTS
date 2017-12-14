@@ -61,9 +61,15 @@ public class TenatController {
 			return new ResponseEntity<TenatProfileDTO>(HttpStatus.NO_CONTENT);
 		}
 		tb.setTenat(tenat);
-		tb.setApartmen(tenat.getApartmen());
-		tb.setBuilding(tenat.getApartmen().getApartmenBuilding());
-		tb.setNotifications(notificationService.findByBuilding(tenat.getApartmen().getApartmenBuilding()));
+		if(tenat.getApartmen() != null){
+			tb.setApartmen(tenat.getApartmen());
+			
+			if(tenat.getApartmen().getApartmenBuilding() != null){
+				tb.setBuilding(tenat.getApartmen().getApartmenBuilding());
+				tb.setNotifications(notificationService.findByBuilding(tenat.getApartmen().getApartmenBuilding()));
+			}
+		}
+		
 		return new ResponseEntity<TenatProfileDTO>(tb, HttpStatus.OK);
 	}
 	
