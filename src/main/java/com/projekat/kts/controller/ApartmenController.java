@@ -77,11 +77,13 @@ public class ApartmenController {
 		if (apartmen == null) {
 			return new ResponseEntity<Apartmen>(HttpStatus.NO_CONTENT);
 		} else {
-			for (AppUser a : apartmen.getApartmen_tenats()) {
-				a.setApartmen(null);
-				a.setHasBuilding(false);
-				a.setOwner(false);
-				appUserRepository.save(a);
+			if(apartmen.getApartmen_tenats() != null){
+				for (AppUser a : apartmen.getApartmen_tenats()) {
+					a.setApartmen(null);
+					a.setHasBuilding(false);
+					a.setOwner(false);
+					appUserRepository.save(a);
+				}
 			}
 			apartmen.setApartmen_tenats(null);
 			apartmen.setApartmenBuilding(null);

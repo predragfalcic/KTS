@@ -13,10 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.projekat.kts.dto.ApartmentsBuildingDTO;
 import com.projekat.kts.model.Apartmen;
 import com.projekat.kts.model.Building;
+import com.projekat.kts.model.Failure;
 import com.projekat.kts.model.Institution;
+import com.projekat.kts.model.Notification;
+import com.projekat.kts.model.Sednica;
 import com.projekat.kts.services.ApartmenService;
 import com.projekat.kts.services.BuildingService;
+import com.projekat.kts.services.FailureService;
 import com.projekat.kts.services.InstitutionService;
+import com.projekat.kts.services.NotificationService;
+import com.projekat.kts.services.SednicaService;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -30,6 +36,15 @@ public class BuildingController {
 	
 	@Autowired
 	private ApartmenService apartmenService;
+	
+	@Autowired
+	private SednicaService sednicaService;
+	
+	@Autowired
+	private FailureService failureService;
+	
+	@Autowired
+	private NotificationService notificationService;
 	
 	/**
 	 * Web service for getting all the buildings
@@ -88,6 +103,22 @@ public class BuildingController {
 				institutionService.save(in);
 			}
 			building.setApartments(null);
+			for (Sednica s : building.getSednice()) {
+				s.setBuilding(null);
+				s.setCreator(null);
+				sednicaService.save(s);
+			}
+			building.setSednice(null);
+			for (Failure f : building.getFailures()) {
+				f.setBuilding(null);
+				failureService.save(f);
+			}
+			for (Notification f : building.getNotifications()) {
+				f.setBuilding(null);
+				notificationService.save(f);
+			}
+			building.setNotifications(null);
+			building.setFailures(null);
 			buildingService.delete(building);
 			return new ResponseEntity<Building>(building, HttpStatus.OK);
 		}

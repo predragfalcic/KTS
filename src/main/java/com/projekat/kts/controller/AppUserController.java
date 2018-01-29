@@ -17,9 +17,20 @@ import org.springframework.web.bind.annotation.RestController;
 import com.projekat.kts.model.Apartmen;
 import com.projekat.kts.model.AppUser;
 import com.projekat.kts.model.Building;
+import com.projekat.kts.model.Comment;
+import com.projekat.kts.model.Notification;
+import com.projekat.kts.model.Sednica;
+import com.projekat.kts.model.Stavka;
+import com.projekat.kts.model.Zapisnik;
 import com.projekat.kts.repository.AppUserRepository;
 import com.projekat.kts.services.ApartmenService;
 import com.projekat.kts.services.BuildingService;
+import com.projekat.kts.services.CommentService;
+import com.projekat.kts.services.FailureService;
+import com.projekat.kts.services.NotificationService;
+import com.projekat.kts.services.SednicaService;
+import com.projekat.kts.services.StavkaService;
+import com.projekat.kts.services.ZapisnikService;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -33,6 +44,24 @@ public class AppUserController {
 	
 	@Autowired
 	private BuildingService buildingService;
+	
+	@Autowired
+	private StavkaService stavkaService;
+	
+	@Autowired
+	private SednicaService sednicaService;
+	
+	@Autowired
+	private FailureService failureService;
+	
+	@Autowired
+	private NotificationService notificationService;
+	
+	@Autowired
+	private CommentService commentService;
+	
+	@Autowired
+	private ZapisnikService zapisnikService;
 	
 	/**
 	 * Web service for getting all the appUsers in the application.
@@ -95,6 +124,31 @@ public class AppUserController {
 					}
 				}
 			}
+			for (Stavka s : appUser.getStavke()) {
+				s.setTenat(null);
+				stavkaService.save(s);
+			}
+			
+			for (Sednica s : appUser.getSednice()) {
+				s.setCreator(null);
+				for (Zapisnik z : s.getZapisnici()) {
+					z.setCreator(null);
+					zapisnikService.save(z);
+				}
+				sednicaService.save(s);
+			}
+			
+			for (Comment s : appUser.getComments()) {
+				s.setAuthor(null);
+				commentService.save(s);
+			}
+			
+			for (Notification s : appUser.getNotifications()) {
+				s.setTenat(null);
+				notificationService.save(s);
+			}
+			
+			appUser.setStavke(null);
 			appUserRepository.delete(appUser);
 			return new ResponseEntity<AppUser>(appUser, HttpStatus.OK);
 		}
